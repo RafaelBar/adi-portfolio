@@ -10,6 +10,11 @@
     "label": "Sections on this page",
     "hero": "Intro"
   },
+  "promotion": {
+    "signText": "Click here for a free consultation",
+    "show": "Show offer",
+    "close": "Close"
+  },
   "nav": {
     "home": "Home",
     "about": "About",
@@ -118,7 +123,8 @@
       "selected-work": "Selected work",
       "full-book-spread": "Full book spread"
     },
-    "close": "Close"
+    "close": "Close",
+    "showMore": "Show more"
   },
   "experience": {
     "label": "Experience",

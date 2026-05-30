@@ -47,7 +47,7 @@ onUnmounted(() => {
         <RouterLink :to="{ name: 'home', params: { locale } }" class="nav__brand font-brand" @click="closeMenu">
           {{ t('profile.name') }}
         </RouterLink>
-        <div class="nav__lang-wrap">
+        <div class="nav__lang-wrap nav__lang-wrap--desktop">
           <LangToggle />
         </div>
       </div>
@@ -75,6 +75,9 @@ onUnmounted(() => {
         >
           {{ t(link.labelKey) }}
         </RouterLink>
+        <div class="nav__lang-wrap nav__lang-wrap--mobile" @click="closeMenu">
+          <LangToggle />
+        </div>
       </nav>
     </div>
   </header>
@@ -213,6 +216,10 @@ onUnmounted(() => {
 }
 
 @media (max-width: 860px) {
+  .nav__lang-wrap--desktop {
+    display: none;
+  }
+
   .nav__toggle {
     display: flex;
   }
@@ -227,6 +234,12 @@ onUnmounted(() => {
 
   .nav--he .nav__links {
     flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+  }
+
+  .nav--he .nav__link {
+    text-align: right;
   }
 
   .nav__links {
@@ -258,6 +271,24 @@ onUnmounted(() => {
   .nav__link {
     padding-block: var(--space-sm);
     font-size: 1.25rem;
+  }
+
+  .nav__lang-wrap--mobile {
+    align-self: flex-start;
+    padding-top: var(--space-sm);
+    border-top: 1px solid rgba(61, 58, 54, 0.08);
+    margin-top: var(--space-xs);
+    width: 100%;
+  }
+
+  .nav--he .nav__lang-wrap--mobile {
+    align-self: flex-end;
+  }
+}
+
+@media (min-width: 861px) {
+  .nav__lang-wrap--mobile {
+    display: none;
   }
 }
 </style>

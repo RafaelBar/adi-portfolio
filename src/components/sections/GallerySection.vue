@@ -13,8 +13,11 @@ const route = useRoute()
 
 type FilterValue = GalleryCategory
 
+const GALLERY_INITIAL_COUNT = 10
+
 const activeFilter = ref<FilterValue>('selected-work')
 const selectedItem = ref<GalleryItem | null>(null)
+const visibleCount = ref(GALLERY_INITIAL_COUNT)
 
 const filters: { value: FilterValue; labelKey: string }[] = GALLERY_CATEGORIES.map((category) => ({
   value: category,
@@ -25,8 +28,19 @@ const filteredItems = computed(() =>
   galleryItems.filter((item) => item.category === activeFilter.value),
 )
 
+const visibleItems = computed(() => filteredItems.value.slice(0, visibleCount.value))
+
+const hasMoreItems = computed(() => filteredItems.value.length > visibleCount.value)
+
 function setFilter(value: FilterValue) {
   activeFilter.value = value
+}
+
+function showMore() {
+  visibleCount.value = Math.min(
+    visibleCount.value + GALLERY_INITIAL_COUNT,
+    filteredItems.value.length,
+  )
 }
 
 function openLightbox(item: GalleryItem) {
@@ -62,6 +76,10 @@ watch(
   () => route.hash,
   () => applyHashFilter(),
 )
+
+watch(activeFilter, () => {
+  visibleCount.value = GALLERY_INITIAL_COUNT
+})
 </script>
 
 <template>
@@ -93,7 +111,7 @@ watch(
       </ScrollReveal>
 
       <ul class="gallery__list">
-        <li v-for="item in filteredItems" :key="item.id" class="gallery__list-item">
+        <li v-for="item in visibleItems" :key="item.id" class="gallery__list-item">
           <button type="button" class="gallery__card" @click="openLightbox(item)">
             <img
               :src="item.image"
@@ -107,6 +125,12 @@ watch(
           </button>
         </li>
       </ul>
+
+      <div v-if="hasMoreItems" class="gallery__more-wrap">
+        <button type="button" class="btn btn--secondary gallery__more" @click="showMore">
+          {{ t('gallery.showMore') }}
+        </button>
+      </div>
     </div>
 
     <Lightbox v-if="selectedItem" :item="selectedItem" @close="closeLightbox" />
@@ -178,6 +202,12 @@ watch(
   display: block;
   width: 100%;
   height: auto;
+}
+
+.gallery__more-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-2xl);
 }
 
 @media (max-width: 768px) {

@@ -10,6 +10,11 @@
     "label": "מקטעים בעמוד",
     "hero": "פתיחה"
   },
+  "promotion": {
+    "signText": "לפגישת יעוץ בחינם\nלחץ כאן",
+    "show": "הצג הצעה",
+    "close": "סגור"
+  },
   "nav": {
     "home": "בית",
     "about": "אודות",
@@ -118,7 +123,8 @@
       "selected-work": "עבודות נבחרות",
       "full-book-spread": "כפולה מלאה מספר"
     },
-    "close": "סגור"
+    "close": "סגור",
+    "showMore": "הצג עוד"
   },
   "experience": {
     "label": "ניסיון",
