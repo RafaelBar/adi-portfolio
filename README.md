@@ -15,10 +15,9 @@ Open [http://localhost:5173](http://localhost:5173). The site redirects to `/he`
 
 1. **Portrait** — replace `public/adi-portrait.svg` with `public/adi-portrait.jpg` (or update `portrait` in `src/data/profile.ts`)
 2. **Gallery** — add images to:
-   - `public/portfolio/books/` — children's books & fantasy
-   - `public/portfolio/custom/` — custom paintings
-   - `public/portfolio/graphic-design/` — graphic design
-3. **Update metadata** — edit `src/data/gallery.ts` (image paths) and titles in `src/locales/en.json` + `src/locales/he.json`
+   - `public/portfolio/selected-work/`
+   - `public/portfolio/full-book-spread/`
+3. Run `npm run gallery:sync` to regenerate `src/data/gallery.ts` from the folders
 4. **Contact info** — update email and social links in `src/data/profile.ts`
 
 ## Customize copy
