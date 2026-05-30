@@ -1,0 +1,49 @@
+:root {
+  --color-paper: #fbf7f0;
+  --color-paper-deep: #f3ece0;
+  --color-blush: #f5d5d0;
+  --color-blush-deep: #e8b8b0;
+  --color-sage: #c8d8c4;
+  --color-sage-deep: #a8c4a2;
+  --color-lavender: #d4c5e8;
+  --color-lavender-deep: #b8a3d4;
+  --color-ink: #3d3a36;
+  --color-ink-soft: #6b6560;
+  --color-ink-muted: #9a948c;
+  --color-white: #ffffff;
+
+  --font-brand: 'Rubik Marker Hatch', system-ui, sans-serif;
+  --font-display: 'Amatic SC', system-ui, sans-serif;
+  --font-body: 'Fredoka', system-ui, sans-serif;
+
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+  --space-4xl: 6rem;
+
+  --radius-sm: 0.5rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+  --radius-xl: 2rem;
+  --radius-full: 9999px;
+
+  --shadow-soft: 0 4px 24px rgba(61, 58, 54, 0.08);
+  --shadow-card: 0 8px 32px rgba(61, 58, 54, 0.1);
+  --shadow-lift: 0 16px 48px rgba(61, 58, 54, 0.14);
+
+  --nav-height: 4.5rem;
+  --content-max: 72rem;
+  --section-gap: clamp(4rem, 8vw, 7rem);
+
+  --transition: 0.25s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transition: 0.01ms;
+  }
+}

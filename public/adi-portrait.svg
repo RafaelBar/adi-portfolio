@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" fill="none">
+  <rect width="400" height="500" fill="#F5D5D0"/>
+  <ellipse cx="200" cy="420" rx="120" ry="40" fill="#E8B8B0" opacity="0.5"/>
+  <circle cx="200" cy="180" r="70" fill="#FBF7F0"/>
+  <path d="M130 320c20-50 120-50 140 0v80H130V320z" fill="#D4C5E8"/>
+  <circle cx="175" cy="175" r="6" fill="#3D3A36"/>
+  <circle cx="225" cy="175" r="6" fill="#3D3A36"/>
+  <path d="M185 200q15 12 30 0" stroke="#3D3A36" stroke-width="3" stroke-linecap="round"/>
+  <path d="M120 140c30-30 130-30 160 0" stroke="#3D3A36" stroke-width="8" stroke-linecap="round"/>
+  <text x="200" y="460" text-anchor="middle" font-family="Georgia, serif" font-size="18" fill="#6B6560">Portrait placeholder</text>
+</svg>
