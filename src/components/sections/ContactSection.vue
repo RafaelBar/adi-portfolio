@@ -3,6 +3,7 @@ import { reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { profile, whatsappUrl } from '@/data/profile'
 import type { ContactAudience } from '@/models/types'
+import { submitContactForm } from '@/lib/contactForm'
 import SectionHeading from '@/components/ui/SectionHeading.vue'
 import ScrollReveal from '@/components/ui/ScrollReveal.vue'
 import SocialIcon from '@/components/ui/SocialIcon.vue'
@@ -15,18 +16,69 @@ const form = reactive({
   audience: 'individual' as ContactAudience,
   name: '',
   email: '',
+  phone: '',
   message: '',
 })
 
+const submitting = ref(false)
 const submitted = ref(false)
+const submitError = ref('')
 
-function submitForm() {
-  const subject = encodeURIComponent(t(`contact.subjects.${form.audience}`))
-  const body = encodeURIComponent(
-    `${form.message}\n\n— ${form.name}\n${form.email}`,
-  )
-  window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`
-  submitted.value = true
+function resetStatus() {
+  submitted.value = false
+  submitError.value = ''
+}
+
+function formatPhone(value: string): string {
+  const trimmed = value.trim()
+  if (!trimmed) return ''
+
+  if (trimmed.startsWith('+')) {
+    const digits = trimmed.slice(1).replace(/\D/g, '')
+    return digits ? `+${digits}` : ''
+  }
+
+  return trimmed.replace(/\s+/g, ' ')
+}
+
+function buildPayload() {
+  const name = form.name.trim()
+  const email = form.email.trim()
+  const phone = formatPhone(form.phone)
+  const message = form.message.trim()
+
+  return {
+    name,
+    email,
+    phone,
+    message,
+    subject: t(`contact.subjects.${form.audience}`),
+  }
+}
+
+function resetForm() {
+  form.audience = 'individual'
+  form.name = ''
+  form.email = ''
+  form.phone = ''
+  form.message = ''
+}
+
+async function submitForm() {
+  resetStatus()
+  submitting.value = true
+
+  const payload = buildPayload()
+
+  try {
+    await submitContactForm(payload)
+    submitted.value = true
+    resetForm()
+  } catch {
+    submitError.value = t('contact.error')
+  } finally {
+    submitting.value = false
+  }
 }
 </script>
 
@@ -46,7 +98,13 @@ function submitForm() {
           <form class="contact__form" @submit.prevent="submitForm">
             <label class="contact__field">
               <span class="contact__label">{{ t('contact.audienceLabel') }}</span>
-              <select v-model="form.audience" class="contact__input contact__select" required>
+              <select
+                v-model="form.audience"
+                class="contact__input contact__select"
+                required
+                :disabled="submitting"
+                @change="resetStatus"
+              >
                 <option v-for="audience in audiences" :key="audience" :value="audience">
                   {{ t(`contact.audiences.${audience}`) }}
                 </option>
@@ -55,12 +113,41 @@ function submitForm() {
 
             <label class="contact__field">
               <span class="contact__label">{{ t('contact.nameLabel') }}</span>
-              <input v-model="form.name" type="text" class="contact__input" required />
+              <input
+                v-model="form.name"
+                type="text"
+                class="contact__input"
+                required
+                :disabled="submitting"
+                @input="resetStatus"
+              />
             </label>
 
             <label class="contact__field">
               <span class="contact__label">{{ t('contact.emailLabel') }}</span>
-              <input v-model="form.email" type="email" class="contact__input" required />
+              <input
+                v-model="form.email"
+                type="email"
+                class="contact__input"
+                required
+                :disabled="submitting"
+                @input="resetStatus"
+              />
+            </label>
+
+            <label class="contact__field">
+              <span class="contact__label">{{ t('contact.formPhoneLabel') }}</span>
+              <input
+                v-model="form.phone"
+                type="tel"
+                class="contact__input contact__input--tel"
+                dir="ltr"
+                autocomplete="tel"
+                inputmode="tel"
+                :placeholder="t('contact.phonePlaceholder')"
+                :disabled="submitting"
+                @input="resetStatus"
+              />
             </label>
 
             <label class="contact__field">
@@ -71,11 +158,20 @@ function submitForm() {
                 rows="5"
                 :placeholder="t('contact.messagePlaceholder')"
                 required
+                :disabled="submitting"
+                @input="resetStatus"
               />
             </label>
 
-            <button type="submit" class="btn btn--primary contact__submit">
-              {{ t('contact.submit') }}
+            <p v-if="submitted" class="contact__feedback contact__feedback--success" role="status">
+              {{ t('contact.success') }}
+            </p>
+            <p v-else-if="submitError" class="contact__feedback contact__feedback--error" role="alert">
+              {{ submitError }}
+            </p>
+
+            <button type="submit" class="btn btn--primary contact__submit" :disabled="submitting">
+              {{ submitting ? t('contact.sending') : t('contact.submit') }}
             </button>
           </form>
         </ScrollReveal>
@@ -148,13 +244,42 @@ function submitForm() {
   border-color: var(--color-ink);
 }
 
+.contact__input:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
 .contact__textarea {
   resize: vertical;
   min-height: 8rem;
 }
 
+.contact__input--tel {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.contact__feedback {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.contact__feedback--success {
+  color: #2f6b3a;
+}
+
+.contact__feedback--error {
+  color: #9b3d3d;
+}
+
 .contact__submit {
   align-self: flex-start;
+}
+
+.contact__submit:disabled {
+  opacity: 0.75;
+  cursor: wait;
 }
 
 .contact__aside {

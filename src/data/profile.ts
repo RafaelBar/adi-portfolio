@@ -1,7 +1,7 @@
 import type { Profile, SocialLink } from '@/models/types'
 
 export const profile: Profile = {
-  email: 'hello@adi-illustrates.com',
+  email: 'rafaelbar37@gmail.com',
   phone: '+972528823790',
   portrait: '/primary-image.png',
   instagram: 'https://www.instagram.com/',
