@@ -27,7 +27,7 @@ All user-facing text lives in:
 - `src/locales/en.json`
 - `src/locales/he.json`
 
-Experience, services, and gallery entries are driven by data files in `src/data/`.
+Services and gallery entries are driven by data files in `src/data/`.
 
 ## Build
 

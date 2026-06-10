@@ -5,7 +5,6 @@ export const SECTION_IDS = [
   'process',
   'services',
   'about',
-  'experience',
   'contact',
 ] as const
 
@@ -24,7 +23,7 @@ export type PageNavLink = {
 
 export const PAGE_NAV_LINKS: PageNavLink[] = [
   { to: 'home', labelKey: 'nav.home', id: 'home' },
-  { to: 'about', labelKey: 'nav.about', id: 'about' },
+  { to: 'about', labelKey: 'nav.howIWork', id: 'about' },
 ]
 
 export const HOME_PAGE_SECTIONS: PageSection[] = [
@@ -38,5 +37,4 @@ export const ABOUT_PAGE_SECTIONS: PageSection[] = [
   { id: 'process', labelKey: 'nav.process' },
   { id: 'services', labelKey: 'nav.services' },
   { id: 'about', labelKey: 'nav.about' },
-  { id: 'experience', labelKey: 'nav.experience' },
 ]

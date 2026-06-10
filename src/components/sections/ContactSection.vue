@@ -2,7 +2,6 @@
 import { reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { profile, whatsappUrl } from '@/data/profile'
-import type { ContactAudience } from '@/models/types'
 import { submitContactForm } from '@/lib/contactForm'
 import SectionHeading from '@/components/ui/SectionHeading.vue'
 import ScrollReveal from '@/components/ui/ScrollReveal.vue'
@@ -10,10 +9,7 @@ import SocialIcon from '@/components/ui/SocialIcon.vue'
 
 const { t } = useI18n()
 
-const audiences: ContactAudience[] = ['publisher', 'art-director', 'individual', 'other']
-
 const form = reactive({
-  audience: 'individual' as ContactAudience,
   name: '',
   email: '',
   phone: '',
@@ -52,12 +48,11 @@ function buildPayload() {
     email,
     phone,
     message,
-    subject: t(`contact.subjects.${form.audience}`),
+    subject: t('contact.subject'),
   }
 }
 
 function resetForm() {
-  form.audience = 'individual'
   form.name = ''
   form.email = ''
   form.phone = ''
@@ -96,21 +91,6 @@ async function submitForm() {
       <div class="contact__grid">
         <ScrollReveal>
           <form class="contact__form" @submit.prevent="submitForm">
-            <label class="contact__field">
-              <span class="contact__label">{{ t('contact.audienceLabel') }}</span>
-              <select
-                v-model="form.audience"
-                class="contact__input contact__select"
-                required
-                :disabled="submitting"
-                @change="resetStatus"
-              >
-                <option v-for="audience in audiences" :key="audience" :value="audience">
-                  {{ t(`contact.audiences.${audience}`) }}
-                </option>
-              </select>
-            </label>
-
             <label class="contact__field">
               <span class="contact__label">{{ t('contact.nameLabel') }}</span>
               <input

@@ -30,6 +30,28 @@ const filteredItems = computed(() =>
 
 const visibleItems = computed(() => filteredItems.value.slice(0, visibleCount.value))
 
+/** Assign each image to the shorter column — balanced layout, stable on "show more". */
+const balancedColumns = computed(() => {
+  const left: GalleryItem[] = []
+  const right: GalleryItem[] = []
+  let leftHeight = 0
+  let rightHeight = 0
+
+  for (const item of visibleItems.value) {
+    const relativeHeight = item.height / item.width
+
+    if (leftHeight <= rightHeight) {
+      left.push(item)
+      leftHeight += relativeHeight
+    } else {
+      right.push(item)
+      rightHeight += relativeHeight
+    }
+  }
+
+  return { left, right }
+})
+
 const hasMoreItems = computed(() => filteredItems.value.length > visibleCount.value)
 
 function setFilter(value: FilterValue) {
@@ -110,7 +132,7 @@ watch(activeFilter, () => {
         </div>
       </ScrollReveal>
 
-      <ul class="gallery__list">
+      <ul class="gallery__list gallery__list--mobile">
         <li v-for="item in visibleItems" :key="item.id" class="gallery__list-item">
           <button type="button" class="gallery__card" @click="openLightbox(item)">
             <img
@@ -125,6 +147,40 @@ watch(activeFilter, () => {
           </button>
         </li>
       </ul>
+
+      <div class="gallery__columns">
+        <ul class="gallery__list">
+          <li v-for="item in balancedColumns.left" :key="item.id" class="gallery__list-item">
+            <button type="button" class="gallery__card" @click="openLightbox(item)">
+              <img
+                :src="item.image"
+                alt=""
+                class="gallery__image"
+                :width="item.width"
+                :height="item.height"
+                loading="lazy"
+                decoding="async"
+              />
+            </button>
+          </li>
+        </ul>
+
+        <ul class="gallery__list">
+          <li v-for="item in balancedColumns.right" :key="item.id" class="gallery__list-item">
+            <button type="button" class="gallery__card" @click="openLightbox(item)">
+              <img
+                :src="item.image"
+                alt=""
+                class="gallery__image"
+                :width="item.width"
+                :height="item.height"
+                loading="lazy"
+                decoding="async"
+              />
+            </button>
+          </li>
+        </ul>
+      </div>
 
       <div v-if="hasMoreItems" class="gallery__more-wrap">
         <button type="button" class="btn btn--secondary gallery__more" @click="showMore">
@@ -166,17 +222,28 @@ watch(activeFilter, () => {
   border-color: var(--color-ink);
 }
 
+.gallery__columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-lg);
+  align-items: start;
+}
+
 .gallery__list {
   list-style: none;
   margin: 0;
   padding: 0;
-  column-count: 2;
-  column-gap: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.gallery__list--mobile {
+  display: none;
 }
 
 .gallery__list-item {
-  break-inside: avoid;
-  margin-bottom: var(--space-lg);
+  margin: 0;
 }
 
 .gallery__card {
@@ -211,8 +278,12 @@ watch(activeFilter, () => {
 }
 
 @media (max-width: 768px) {
-  .gallery__list {
-    column-count: 1;
+  .gallery__columns {
+    display: none;
+  }
+
+  .gallery__list--mobile {
+    display: flex;
   }
 }
 </style>

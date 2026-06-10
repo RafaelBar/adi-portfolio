@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onUnmounted } from 'vue'
+import { ref, onUnmounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { isLocaleCode } from '@/i18n'
@@ -7,38 +7,26 @@ import type { LocaleCode } from '@/models/types'
 
 const NAV_OFFSET = 88
 const CLOSE_DELAY_MS = 500
-const PROMOTION_DISMISSED_KEY = 'adi-portfolio-promotion-dismissed'
 
 const { t, locale: i18nLocale } = useI18n()
 const route = useRoute()
 const router = useRouter()
 
-function isDismissedInSession(): boolean {
-  try {
-    return sessionStorage.getItem(PROMOTION_DISMISSED_KEY) === '1'
-  } catch {
-    return false
-  }
-}
-
-function markDismissedInSession() {
-  try {
-    sessionStorage.setItem(PROMOTION_DISMISSED_KEY, '1')
-  } catch {
-    /* ignore */
-  }
-}
-
-const isOpen = ref(!isDismissedInSession())
+const isOpen = ref(true)
 let closeTimer: ReturnType<typeof setTimeout> | null = null
 
+watch(
+  () => route.path,
+  () => {
+    isOpen.value = true
+  },
+)
+
 function dismissPromotion() {
-  markDismissedInSession()
   isOpen.value = false
 }
 
 function closeWithDelay() {
-  markDismissedInSession()
   if (closeTimer) clearTimeout(closeTimer)
   closeTimer = setTimeout(() => {
     isOpen.value = false
@@ -47,11 +35,6 @@ function closeWithDelay() {
 }
 
 function showPromotion() {
-  try {
-    sessionStorage.removeItem(PROMOTION_DISMISSED_KEY)
-  } catch {
-    /* ignore */
-  }
   isOpen.value = true
 }
 
@@ -90,7 +73,10 @@ async function goToContact() {
 </script>
 
 <template>
-  <div class="promotion" :class="{ 'promotion--open': isOpen }">
+  <div
+    class="promotion"
+    :class="{ 'promotion--open': isOpen, 'promotion--en': i18nLocale === 'en' }"
+  >
     <button
       v-show="!isOpen"
       type="button"
@@ -130,15 +116,17 @@ async function goToContact() {
         </button>
 
         <a href="#contact" class="promotion__cta" @click.prevent="goToContact">
-          <img
-            class="promotion__image"
-            src="/adi-promotion.png"
-            alt=""
-            width="2048"
-            height="2048"
-            decoding="async"
-            fetchpriority="low"
-          />
+          <div class="promotion__image-wrap">
+            <img
+              class="promotion__image"
+              src="/adi-promotion.png"
+              alt=""
+              width="2048"
+              height="2048"
+              decoding="async"
+              fetchpriority="low"
+            />
+          </div>
 
           <div class="promotion__sign">
             <span
@@ -172,6 +160,16 @@ async function goToContact() {
   pointer-events: auto;
 }
 
+.promotion--en .promotion__panel {
+  left: auto;
+  right: 0;
+  transform: translateX(110%);
+}
+
+.promotion--en.promotion--open .promotion__panel {
+  transform: translateX(0);
+}
+
 .promotion__frame {
   position: relative;
   display: block;
@@ -195,12 +193,21 @@ async function goToContact() {
   outline-offset: 4px;
 }
 
+.promotion__image-wrap {
+  display: block;
+  line-height: 0;
+}
+
 .promotion__image {
   display: block;
   width: 100%;
   height: auto;
   pointer-events: none;
   user-select: none;
+}
+
+.promotion--en .promotion__image {
+  transform: scaleX(-1);
 }
 
 /* Overlay aligned to the pink sign in adi-promotion.png */
@@ -230,6 +237,16 @@ async function goToContact() {
   color: #3d3a36;
   text-align: center;
   white-space: pre-line;
+}
+
+.promotion--en .promotion__sign {
+  left: 22%;
+  width: 37%;
+}
+
+.promotion--en .promotion__sign-text {
+  left: 20px;
+  right: 26px;
 }
 
 .promotion__close {
@@ -265,6 +282,16 @@ async function goToContact() {
   transform: translate(30%, -30%) scale(1.05);
 }
 
+.promotion--en .promotion__close {
+  right: auto;
+  left: 22%;
+  transform: translate(-30%, -30%);
+}
+
+.promotion--en .promotion__close:hover {
+  transform: translate(-30%, -30%) scale(1.05);
+}
+
 .promotion__reopen {
   position: fixed;
   left: 0;
@@ -290,6 +317,22 @@ async function goToContact() {
 .promotion__reopen:hover {
   background: #fff;
   transform: translateX(2px);
+}
+
+.promotion--en .promotion__reopen {
+  left: auto;
+  right: 0;
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+  border-left: 1px solid rgba(61, 58, 54, 0.12);
+  border-right: none;
+}
+
+.promotion--en .promotion__reopen:hover {
+  transform: translateX(-2px);
+}
+
+.promotion--en .promotion__reopen-icon {
+  transform: rotate(180deg);
 }
 
 .promotion__reopen-icon {
@@ -318,6 +361,16 @@ async function goToContact() {
     line-height: 18px;
   }
 
+  .promotion--en .promotion__sign {
+    left: 21.5%;
+    width: 38%;
+  }
+
+  .promotion--en .promotion__sign-text {
+    left: 20px;
+    right: 26px;
+  }
+
   .promotion__close {
     top: 28%;
     right: 21.5%;
@@ -328,6 +381,16 @@ async function goToContact() {
 
   .promotion__close:hover {
     transform: translate(25%, -25%) scale(1.05);
+  }
+
+  .promotion--en .promotion__close {
+    right: auto;
+    left: 21.5%;
+    transform: translate(-25%, -25%);
+  }
+
+  .promotion--en .promotion__close:hover {
+    transform: translate(-25%, -25%) scale(1.05);
   }
 
   .promotion__close-icon {

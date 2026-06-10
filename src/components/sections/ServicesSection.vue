@@ -28,8 +28,6 @@ const icons: Record<string, string> = {
         <ScrollReveal v-for="service in services" :key="service.id">
           <article class="services__card">
             <span class="services__icon" aria-hidden="true">{{ icons[service.icon] }}</span>
-            <p class="services__audience">{{ t(service.audienceKey) }}</p>
-            <p class="services__purpose">{{ t(service.purposeKey) }}</p>
             <h3 class="services__title">{{ t(service.titleKey) }}</h3>
             <p class="services__description">{{ t(service.descriptionKey) }}</p>
           </article>
@@ -42,8 +40,10 @@ const icons: Record<string, string> = {
 <style scoped>
 .services__grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: var(--space-lg);
+  max-width: 56rem;
+  margin-inline: auto;
 }
 
 .services__card {
@@ -59,28 +59,6 @@ const icons: Record<string, string> = {
   font-size: 1.75rem;
   display: block;
   margin-bottom: var(--space-md);
-}
-
-.services__audience {
-  font-size: 0.75rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--color-ink-muted);
-  margin-bottom: var(--space-sm);
-}
-
-.services__purpose {
-  font-size: 0.9rem;
-  font-weight: 600;
-  line-height: 1.45;
-  color: var(--color-ink);
-  margin-bottom: var(--space-md);
-}
-
-:global(html[lang='he']) .services__audience {
-  text-transform: none;
-  letter-spacing: normal;
 }
 
 .services__title {

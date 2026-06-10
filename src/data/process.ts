@@ -2,23 +2,33 @@ import type { ProcessStep } from '@/models/types'
 
 export const processSteps: ProcessStep[] = [
   {
-    id: 'purpose',
-    titleKey: 'process.steps.purpose.title',
-    descriptionKey: 'process.steps.purpose.description',
+    id: 'goal',
+    titleKey: 'process.steps.goal.title',
+    descriptionKey: 'process.steps.goal.description',
   },
   {
-    id: 'voice',
-    titleKey: 'process.steps.voice.title',
-    descriptionKey: 'process.steps.voice.description',
+    id: 'briefing',
+    titleKey: 'process.steps.briefing.title',
+    descriptionKey: 'process.steps.briefing.description',
   },
   {
-    id: 'collaborate',
-    titleKey: 'process.steps.collaborate.title',
-    descriptionKey: 'process.steps.collaborate.description',
+    id: 'sketches',
+    titleKey: 'process.steps.sketches.title',
+    descriptionKey: 'process.steps.sketches.description',
   },
   {
-    id: 'deliver',
-    titleKey: 'process.steps.deliver.title',
-    descriptionKey: 'process.steps.deliver.description',
+    id: 'color',
+    titleKey: 'process.steps.color.title',
+    descriptionKey: 'process.steps.color.description',
+  },
+  {
+    id: 'touchups',
+    titleKey: 'process.steps.touchups.title',
+    descriptionKey: 'process.steps.touchups.description',
+  },
+  {
+    id: 'cover',
+    titleKey: 'process.steps.cover.title',
+    descriptionKey: 'process.steps.cover.description',
   },
 ]

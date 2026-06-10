@@ -15,6 +15,7 @@ const { t } = useI18n()
           <h1 class="hero__name font-brand">{{ t('profile.name') }}</h1>
           <p class="hero__tagline">{{ t('hero.tagline') }}</p>
           <p class="hero__hook">{{ t('hero.hook') }}</p>
+          <p class="hero__invitation">{{ t('hero.invitation') }}</p>
           <div class="hero__actions">
             <a href="#gallery" class="btn btn--primary">{{ t('hero.ctaGallery') }}</a>
             <a href="#contact" class="btn btn--project">{{ t('hero.ctaContact') }}</a>
@@ -55,6 +56,7 @@ const { t } = useI18n()
   letter-spacing: 0.08em;
   text-transform: uppercase;
   margin-bottom: var(--space-sm);
+  white-space: pre-line;
 }
 
 :global(html[lang='he']) .hero__greeting {
@@ -63,6 +65,7 @@ const { t } = useI18n()
 }
 
 .hero__name {
+  font-family: var(--font-hero-name);
   font-size: clamp(3rem, 8vw, 5rem);
   line-height: 1.05;
   margin-bottom: var(--space-md);
@@ -74,9 +77,18 @@ const { t } = useI18n()
   margin-bottom: var(--space-lg);
 }
 
-.hero__hook {
+.hero__hook,
+.hero__invitation {
   max-width: 34rem;
   color: var(--color-ink-soft);
+  white-space: pre-line;
+}
+
+.hero__hook {
+  margin-bottom: var(--space-md);
+}
+
+.hero__invitation {
   margin-bottom: var(--space-xl);
 }
 

@@ -3,8 +3,8 @@
     "name": "Adi Badash"
   },
   "meta": {
-    "title": "Adi Badash | Children's Book Illustrator & Visual Storyteller",
-    "description": "Hire Adi Badash for children's book illustration, fantasy art, and custom paintings. Purpose-led visual storytelling for publishers, art directors, and families."
+    "title": "Adi Badash | Children's Book Illustrator",
+    "description": "Children's book illustration is a collaborative creation — built on communication, trust, and a style that fits your story."
   },
   "sectionNav": {
     "label": "Sections on this page",
@@ -17,108 +17,95 @@
   },
   "nav": {
     "home": "Home",
+    "howIWork": "How I Work",
     "about": "About",
-    "workWith": "Your Project",
-    "process": "How I Work",
-    "services": "Services",
+    "workWith": "Style Matching",
+    "process": "Work Stages",
+    "services": "Illustration Packages",
     "gallery": "Work",
-    "experience": "Experience",
     "contact": "Contact",
     "menu": "Menu"
   },
   "hero": {
     "greeting": "Hello, I'm",
-    "tagline": "Children's Book Illustrator & Visual Storyteller",
-    "hook": "The right illustration doesn't just decorate a project—it defines tone, carries your story, and gives readers something to feel and remember.",
+    "tagline": "The most important thing, in my view, when choosing an illustrator is collaboration and communication between both sides above all.",
+    "hook": "When there is a genuine connection and open communication, a professional illustrator knows how to adapt stylistically and connect to the author's vision.\n\nIt's important to me that the process feels enjoyable and meaningful for both sides — because that's where the most beautiful results come from.",
+    "invitation": "If my illustrations and way of working resonate with you, I invite you to get in touch. I would love to take part in the process and share the excitement with you when the work comes to life.",
     "ctaGallery": "View Selected Work",
     "ctaContact": "Start a Project"
   },
   "about": {
     "label": "About",
-    "title": "A visual voice built for narrative depth",
+    "title": "Nice to meet you",
     "paragraphs": [
-      "I'm Adi Badash, an illustrator specializing in children's books, fantasy worlds, and custom artwork. My work is guided by storytelling fit—how well the images interpret your idea, elevate emotion, and stay true to the world you're building.",
-      "For publishers and art directors, I bring reliability, clear communication, and a deep understanding of narrative illustration. For families and private clients, I craft one-of-a-kind paintings with the same care for character and feeling.",
-      "The best results come from collaboration: a clear brief, mutual trust, and room for creative interpretation—not just execution. I'd love to hear what you want your audience to understand and remember."
+      "I'm Adi Badash, a children's book and fantasy illustrator. I believe strong illustration is built through collaboration, listening, and a real connection to the story."
     ]
   },
   "workWith": {
-    "label": "Your project",
-    "title": "Start with the purpose—not the style",
-    "subtitle": "Different goals need different illustration approaches. Clarity here makes the entire collaboration more effective.",
+    "label": "Style matching",
+    "title": "Matching illustration style and character to the story's needs",
+    "subtitle": "When working with authors, we sit together, analyze and understand the nature of the story, the author's vision, and the feelings the illustrations need to convey.",
     "items": {
-      "publishers": {
-        "purpose": "Does your book need character, emotion, and narrative depth on every spread?",
-        "title": "Publishers & Art Directors",
-        "description": "Full-spread illustration, character design, and visual storytelling for children's books and fantasy titles—built for published and independent projects.",
-        "outcome": "Illustration that carries the story forward with clarity and wonder."
+      "emotional": {
+        "title": "Emotional stories",
+        "description": "For stories with an emotional character, emphasis is placed on facial expressions, emotion, and dynamics between characters."
       },
-      "families": {
-        "purpose": "Are you creating a keepsake that should feel personal, warm, and lasting?",
-        "title": "Families & Private Clients",
-        "description": "Custom children's paintings and story-inspired commissions—hand-crafted art made for nurseries, gifts, and treasured moments.",
-        "outcome": "Art that becomes part of your family's story."
-      },
-      "brands": {
-        "purpose": "Does your campaign need a consistent visual identity with storybook charm?",
-        "title": "Brands & Creative Projects",
-        "description": "Graphic design for events, campaigns, and collaborations—playful, polished visuals with an illustrated, narrative feel.",
-        "outcome": "Illustration that communicates tone and identity at a glance."
+      "dreamy": {
+        "title": "Dreamy stories",
+        "description": "For stories with a dreamy character, the focus is on building a world and atmosphere that wrap the words and story and draw the reader into the world created for them."
       }
     }
   },
   "process": {
-    "label": "How I work",
-    "title": "Clarity, collaboration, and the right creative fit",
-    "subtitle": "Strong illustration projects depend on more than aesthetics—they depend on purpose, trust, and storytelling alignment.",
+    "label": "Work stages",
+    "title": "Work stages",
+    "subtitle": "A clear, transparent, collaborative process — from the first conversation to the cover.",
     "steps": {
-      "purpose": {
-        "title": "Define the purpose",
-        "description": "We begin with what the illustration needs to do: the audience, the feeling you want to leave behind, and the role of images in your book, brand, or commission."
+      "goal": {
+        "title": "Defining the goal",
+        "description": "The first thing we do together is an introductory conversation, to understand your vision, the visual world you are aiming for, and to align on the character of the illustrations and figures."
       },
-      "voice": {
-        "title": "Find the visual voice",
-        "description": "We look for a storytelling fit—not illustration in general, but a visual language that aligns with your message, characters, and world."
+      "briefing": {
+        "title": "Briefing session",
+        "description": "At the start of the project we meet together, go through the text, divide it into spreads, brainstorm ideas, and define the illustrations for each spread."
       },
-      "collaborate": {
-        "title": "Collaborate with trust",
-        "description": "Clear communication, thoughtful feedback, and space for interpretation. The strongest work happens when you trust the creative process."
+      "sketches": {
+        "title": "Sketches and black-and-white illustrations",
+        "description": "After the illustrations are defined, sketches will be sent for concept approval, followed by black-and-white illustrations of the characters and interior spreads for composition approval."
       },
-      "deliver": {
-        "title": "Deliver with intention",
-        "description": "Final artwork that doesn't just look beautiful—it becomes a defining part of how your story, brand, or gift is experienced and remembered."
+      "color": {
+        "title": "Color stage",
+        "description": "After the composition and black-and-white illustrations are approved, we move on to the exciting and enjoyable stage of coloring. At this stage, color illustrations will be sent, and changes and refinements to the color palette can be made."
+      },
+      "touchups": {
+        "title": "Touch-ups",
+        "description": "After the colors are approved, final touch-ups and refinements will be made to the interior illustrations."
+      },
+      "cover": {
+        "title": "Cover",
+        "description": "We save the cover illustration for the end, because it is the face of the book, and the best ideas often come during the working process."
       }
     }
   },
   "services": {
-    "label": "Services",
-    "title": "What the illustration achieves",
-    "subtitle": "Each service is shaped around a clear creative goal—then delivered with craft and care.",
+    "label": "Illustration packages",
+    "title": "Illustration packages",
+    "subtitle": "Choose the package that fits the stage your project is in.",
     "items": {
-      "books": {
-        "purpose": "When your story needs character, emotion, and narrative depth on every page.",
-        "title": "Children's Books & Fantasy",
-        "description": "Character design, full-page spreads, cover art, and whimsical fantasy illustration for published and independent projects.",
-        "audience": "For publishers & art directors"
+      "illustration": {
+        "title": "Illustration",
+        "description": "Book illustration after receiving the text divided into spreads, with each spread forming a double page. At the end of the process you will receive high-quality files for further graphic work and cover design."
       },
-      "custom": {
-        "purpose": "When you want art that feels intimate, meaningful, and made for one person or family.",
-        "title": "Custom Children's Paintings",
-        "description": "Hand-crafted portraits and story-inspired paintings—perfect gifts, nursery art, and personal keepsakes.",
-        "audience": "For families & personal commissions"
-      },
-      "design": {
-        "purpose": "When your brand or event needs a cohesive visual story—not just isolated graphics.",
-        "title": "Graphic Design",
-        "description": "Invitations, branding elements, event materials, and visual assets with an illustrated, storybook feel.",
-        "audience": "For brands, events & creative projects"
+      "illustrationDesign": {
+        "title": "Illustration + graphic design",
+        "description": "Text division into spreads, book illustration, cover design, text integration, and preparation of print-ready files."
       }
     }
   },
   "gallery": {
     "label": "Portfolio",
     "title": "Selected work",
-    "subtitle": "Browse by project type—a glimpse into visual languages shaped for story, commission, and brand.",
+    "subtitle": "Browse by project type — a glimpse into visual languages shaped for story, commission, and brand.",
     "categories": {
       "selected-work": "Selected work",
       "full-book-spread": "Full book spread"
@@ -126,51 +113,17 @@
     "close": "Close",
     "showMore": "Show more"
   },
-  "experience": {
-    "label": "Experience",
-    "title": "Career highlights",
-    "items": {
-      "exp01": {
-        "title": "Illustrated \"The Starlight Garden\" — Moonbeam Publishing",
-        "description": "Full interior illustration for a 32-page picture book, including character development and cover art."
-      },
-      "exp02": {
-        "title": "Fantasy Series — Independent Publisher Collaboration",
-        "description": "Created chapter opener illustrations and map artwork for a middle-grade fantasy trilogy."
-      },
-      "exp03": {
-        "title": "Custom Commission Collection",
-        "description": "Delivered 40+ personalized children's paintings for families, nurseries, and special occasions."
-      },
-      "exp04": {
-        "title": "Graphic Design — Children's Book Fair",
-        "description": "Designed event branding, signage, and promotional materials for a regional book fair."
-      }
-    }
-  },
   "contact": {
     "label": "Contact",
-    "title": "Let's find the right creative fit",
-    "subtitle": "Tell me about your project—what it needs to achieve, who it's for, and what you want people to feel when they see it.",
-    "audienceLabel": "I am a…",
-    "audiences": {
-      "publisher": "Publisher",
-      "art-director": "Art director",
-      "individual": "Individual / family",
-      "other": "Other"
-    },
-    "subjects": {
-      "publisher": "Book illustration inquiry — Adi Badash Portfolio",
-      "art-director": "Art direction collaboration — Adi Badash Portfolio",
-      "individual": "Custom painting commission — Adi Badash Portfolio",
-      "other": "Creative project inquiry — Adi Badash Portfolio"
-    },
+    "title": "Let's create together",
+    "subtitle": "Tell me about your story — I'd love to hear more, connect, and see whether we're the right fit for the process.",
+    "subject": "Message from Adi Badash Portfolio",
     "nameLabel": "Name",
     "emailLabel": "Email",
     "formPhoneLabel": "Phone (optional)",
     "phonePlaceholder": "+1 555 123 4567",
     "messageLabel": "Tell me about your project",
-    "messagePlaceholder": "What should your audience feel, understand, or remember? Share your story, timeline, and goals…",
+    "messagePlaceholder": "Share your story, where the project stands, and what matters to you in the process…",
     "submit": "Send message",
     "sending": "Sending…",
     "success": "Thanks — your message was sent. I'll get back to you soon.",
@@ -179,7 +132,7 @@
     "phoneLabel": "Or connect on WhatsApp"
   },
   "footer": {
-    "tagline": "Illustration that is beautiful—and purposeful.",
+    "tagline": "Children's book illustration — a collaborative creation.",
     "rights": "All artwork © Adi Badash"
   },
   "social": {
