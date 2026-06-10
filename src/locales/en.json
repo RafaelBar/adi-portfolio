@@ -36,10 +36,7 @@
   },
   "about": {
     "label": "About",
-    "title": "Nice to meet you",
-    "paragraphs": [
-      "I'm Adi Badash, a children's book and fantasy illustrator. I believe strong illustration is built through collaboration, listening, and a real connection to the story."
-    ]
+    "title": "Nice to meet you"
   },
   "workWith": {
     "label": "Style matching",

@@ -4,9 +4,7 @@ import { profile } from '@/data/profile'
 import SectionHeading from '@/components/ui/SectionHeading.vue'
 import ScrollReveal from '@/components/ui/ScrollReveal.vue'
 
-const { t, tm } = useI18n()
-
-const paragraphs = tm('about.paragraphs') as string[]
+const { t } = useI18n()
 </script>
 
 <template>
@@ -25,9 +23,9 @@ const paragraphs = tm('about.paragraphs') as string[]
 
         <ScrollReveal>
           <div class="about__text">
-            <p v-for="(paragraph, index) in paragraphs" :key="index" class="about__paragraph">
-              {{ paragraph }}
-            </p>
+            <p class="about__tagline">{{ t('hero.tagline') }}</p>
+            <p class="about__paragraph about__paragraph--pre">{{ t('hero.hook') }}</p>
+            <p class="about__paragraph about__paragraph--pre">{{ t('hero.invitation') }}</p>
           </div>
         </ScrollReveal>
       </div>
@@ -62,9 +60,18 @@ const paragraphs = tm('about.paragraphs') as string[]
   gap: var(--space-lg);
 }
 
+.about__tagline {
+  font-size: clamp(1.125rem, 2.4vw, 1.375rem);
+  color: var(--color-ink-soft);
+}
+
 .about__paragraph {
   color: var(--color-ink-soft);
   font-size: 1.0625rem;
+}
+
+.about__paragraph--pre {
+  white-space: pre-line;
 }
 
 @media (max-width: 768px) {
