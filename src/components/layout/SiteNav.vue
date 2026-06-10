@@ -172,11 +172,12 @@ onUnmounted(() => {
 .nav__brand {
   font-size: 1.5rem;
   line-height: 1;
+  color: var(--color-ink);
   transition: color var(--transition);
 }
 
 .nav__brand:hover {
-  color: var(--color-brand-hover);
+  color: var(--color-ink-soft);
 }
 
 .nav__toggle {
