@@ -7,6 +7,8 @@
   --color-sage-deep: #a8c4a2;
   --color-lavender: #d4c5e8;
   --color-lavender-deep: #b8a3d4;
+  --color-brand: var(--color-lavender-deep);
+  --color-brand-hover: #9b7fc4;
   --color-ink: #3d3a36;
   --color-ink-soft: #6b6560;
   --color-ink-muted: #9a948c;
