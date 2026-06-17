@@ -13,9 +13,11 @@ export interface GalleryItem {
   thumbHeight: number
 }
 
+export type ServiceIconName = 'draw' | 'spread'
+
 export interface ServiceItem {
   id: string
-  icon: string
+  icon: ServiceIconName
   titleKey: string
   descriptionKey: string
 }

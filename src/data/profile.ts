@@ -4,7 +4,7 @@ export const profile: Profile = {
   email: 'adi11151@gmail.com',
   phone: '+972528823790',
   portrait: '/primary-image.png',
-  instagram: 'https://www.instagram.com/',
+  instagram: 'https://www.instagram.com/badassprints_/',
   facebook: 'https://www.facebook.com/',
 }
 

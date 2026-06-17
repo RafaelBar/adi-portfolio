@@ -3,13 +3,13 @@ import type { ServiceItem } from '@/models/types'
 export const services: ServiceItem[] = [
   {
     id: 'illustration',
-    icon: 'book',
+    icon: 'draw',
     titleKey: 'services.items.illustration.title',
     descriptionKey: 'services.items.illustration.description',
   },
   {
     id: 'illustration-design',
-    icon: 'sparkle',
+    icon: 'spread',
     titleKey: 'services.items.illustrationDesign.title',
     descriptionKey: 'services.items.illustrationDesign.description',
   },
