@@ -6,8 +6,11 @@ export interface GalleryItem {
   id: string
   category: GalleryCategory
   image: string
+  thumb: string
   width: number
   height: number
+  thumbWidth: number
+  thumbHeight: number
 }
 
 export interface ServiceItem {
