@@ -9,21 +9,15 @@ const { t } = useI18n()
 <template>
   <section id="hero" class="hero section">
     <div class="hero__inner container">
-      <ScrollReveal>
-        <div class="hero__content">
+      <ScrollReveal class="hero__area-intro">
+        <div class="hero__intro">
           <p class="hero__greeting">{{ t('hero.greeting') }}</p>
           <h1 class="hero__name font-brand">{{ t('profile.name') }}</h1>
           <p class="hero__tagline">{{ t('hero.tagline') }}</p>
-          <p class="hero__hook">{{ t('hero.hook') }}</p>
-          <p class="hero__invitation">{{ t('hero.invitation') }}</p>
-          <div class="hero__actions">
-            <a href="#gallery" class="btn btn--primary">{{ t('hero.ctaGallery') }}</a>
-            <a href="#contact" class="btn btn--project">{{ t('hero.ctaContact') }}</a>
-          </div>
         </div>
       </ScrollReveal>
 
-      <ScrollReveal>
+      <ScrollReveal class="hero__area-visual">
         <div class="hero__visual" aria-hidden="true">
           <div class="hero__frame">
             <img :src="profile.portrait" :alt="t('profile.name')" class="hero__portrait" />
@@ -31,6 +25,21 @@ const { t } = useI18n()
           <div class="hero__accent hero__accent--1" />
           <div class="hero__accent hero__accent--2" />
         </div>
+      </ScrollReveal>
+
+      <ScrollReveal class="hero__area-actions">
+        <div class="hero__actions">
+          <a href="#gallery" class="btn btn--primary">{{ t('hero.ctaGallery') }}</a>
+          <a href="#contact" class="btn btn--project">{{ t('hero.ctaContact') }}</a>
+        </div>
+      </ScrollReveal>
+
+      <ScrollReveal class="hero__area-hook">
+        <p class="hero__hook">{{ t('hero.hook') }}</p>
+      </ScrollReveal>
+
+      <ScrollReveal class="hero__area-invitation">
+        <p class="hero__invitation">{{ t('hero.invitation') }}</p>
       </ScrollReveal>
     </div>
   </section>
@@ -45,8 +54,33 @@ const { t } = useI18n()
 .hero__inner {
   display: grid;
   grid-template-columns: 0.92fr 1.15fr;
+  grid-template-areas:
+    'intro visual'
+    'hook visual'
+    'invitation visual'
+    'actions visual';
   align-items: center;
   gap: clamp(2rem, 5vw, 4rem);
+}
+
+.hero__area-intro {
+  grid-area: intro;
+}
+
+.hero__area-hook {
+  grid-area: hook;
+}
+
+.hero__area-visual {
+  grid-area: visual;
+}
+
+.hero__area-actions {
+  grid-area: actions;
+}
+
+.hero__area-invitation {
+  grid-area: invitation;
 }
 
 .hero__greeting {
@@ -89,7 +123,7 @@ const { t } = useI18n()
 }
 
 .hero__invitation {
-  margin-bottom: var(--space-xl);
+  margin-bottom: 0;
 }
 
 .hero__actions {
@@ -97,6 +131,7 @@ const { t } = useI18n()
   flex-wrap: wrap;
   gap: var(--space-md);
   overflow: visible;
+  margin-bottom: 0;
 }
 
 .hero__actions .btn--project {
@@ -182,13 +217,34 @@ const { t } = useI18n()
   background: var(--color-sage);
 }
 
+@media (min-width: 769px) {
+  .hero__invitation {
+    margin-bottom: var(--space-xl);
+  }
+}
+
 @media (max-width: 768px) {
   .hero__inner {
     grid-template-columns: 1fr;
+    grid-template-areas:
+      'intro'
+      'visual'
+      'hook'
+      'invitation'
+      'actions';
+    gap: clamp(1.5rem, 4vw, 2rem);
   }
 
-  .hero__visual {
-    order: -1;
+  .hero__tagline {
+    margin-bottom: 0;
+  }
+
+  .hero__invitation {
+    margin-bottom: var(--space-xl);
+  }
+
+  .hero__actions {
+    margin-bottom: 0;
   }
 
   .hero__frame {
