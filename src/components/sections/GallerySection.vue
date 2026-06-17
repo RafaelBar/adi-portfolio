@@ -6,6 +6,7 @@ import { galleryItems, GALLERY_CATEGORIES } from '@/data/gallery'
 import type { GalleryCategory, GalleryItem } from '@/models/types'
 import SectionHeading from '@/components/ui/SectionHeading.vue'
 import ScrollReveal from '@/components/ui/ScrollReveal.vue'
+import OptimizedImage from '@/components/ui/OptimizedImage.vue'
 import Lightbox from '@/components/ui/Lightbox.vue'
 
 const { t } = useI18n()
@@ -135,14 +136,13 @@ watch(activeFilter, () => {
       <ul class="gallery__list gallery__list--mobile">
         <li v-for="item in visibleItems" :key="item.id" class="gallery__list-item">
           <button type="button" class="gallery__card" @click="openLightbox(item)">
-            <img
-              :src="item.image"
+            <OptimizedImage
+              :src="item.thumb"
               alt=""
-              class="gallery__image"
-              :width="item.width"
-              :height="item.height"
-              loading="lazy"
-              decoding="async"
+              :width="item.thumbWidth"
+              :height="item.thumbHeight"
+              fit="cover"
+              img-class="gallery__image"
             />
           </button>
         </li>
@@ -152,14 +152,13 @@ watch(activeFilter, () => {
         <ul class="gallery__list">
           <li v-for="item in balancedColumns.left" :key="item.id" class="gallery__list-item">
             <button type="button" class="gallery__card" @click="openLightbox(item)">
-              <img
-                :src="item.image"
+              <OptimizedImage
+                :src="item.thumb"
                 alt=""
-                class="gallery__image"
-                :width="item.width"
-                :height="item.height"
-                loading="lazy"
-                decoding="async"
+                :width="item.thumbWidth"
+                :height="item.thumbHeight"
+                fit="cover"
+                img-class="gallery__image"
               />
             </button>
           </li>
@@ -168,14 +167,13 @@ watch(activeFilter, () => {
         <ul class="gallery__list">
           <li v-for="item in balancedColumns.right" :key="item.id" class="gallery__list-item">
             <button type="button" class="gallery__card" @click="openLightbox(item)">
-              <img
-                :src="item.image"
+              <OptimizedImage
+                :src="item.thumb"
                 alt=""
-                class="gallery__image"
-                :width="item.width"
-                :height="item.height"
-                loading="lazy"
-                decoding="async"
+                :width="item.thumbWidth"
+                :height="item.thumbHeight"
+                fit="cover"
+                img-class="gallery__image"
               />
             </button>
           </li>
@@ -260,6 +258,10 @@ watch(activeFilter, () => {
     box-shadow var(--transition);
 }
 
+.gallery__card :deep(.optimized-image) {
+  width: 100%;
+}
+
 .gallery__card:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-card);
@@ -268,7 +270,7 @@ watch(activeFilter, () => {
 .gallery__image {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
 }
 
 .gallery__more-wrap {

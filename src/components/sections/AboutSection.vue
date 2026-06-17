@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { profile } from '@/data/profile'
+import {
+  portraitAssets,
+  portraitDefaultSrc,
+  portraitSizes,
+  portraitSrcset,
+} from '@/data/portrait'
 import SectionHeading from '@/components/ui/SectionHeading.vue'
+import OptimizedImage from '@/components/ui/OptimizedImage.vue'
 import ScrollReveal from '@/components/ui/ScrollReveal.vue'
 
 const { t } = useI18n()
@@ -17,7 +23,16 @@ const { t } = useI18n()
       <div class="about__grid">
         <ScrollReveal>
           <div class="about__portrait-wrap">
-            <img :src="profile.portrait" :alt="t('profile.name')" class="about__portrait" />
+            <OptimizedImage
+              :src="portraitDefaultSrc"
+              :srcset="portraitSrcset()"
+              :sizes="portraitSizes"
+              :width="portraitAssets.width"
+              :height="portraitAssets.height"
+              :alt="t('profile.name')"
+              img-class="about__portrait"
+              transparent
+            />
           </div>
         </ScrollReveal>
 
@@ -44,14 +59,12 @@ const { t } = useI18n()
 .about__portrait-wrap {
   display: flex;
   justify-content: center;
+  width: 100%;
+  max-width: 48rem;
 }
 
 .about__portrait {
-  display: block;
-  width: 100%;
   max-width: 48rem;
-  height: auto;
-  object-fit: contain;
 }
 
 .about__text {

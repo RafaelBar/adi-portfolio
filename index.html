@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="is-app-loading">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -9,6 +9,27 @@
       content="תיק עבודות של עדי בדש — איור ספרי ילדים הוא יצירה משותפת, שיתוף פעולה והתאמת סגנון לסיפור."
     />
     <meta name="theme-color" content="#FBF7F0" />
+    <link
+      rel="preload"
+      as="image"
+      type="image/webp"
+      href="/images/portrait-480.webp"
+      media="(max-width: 480px)"
+    />
+    <link
+      rel="preload"
+      as="image"
+      type="image/webp"
+      href="/images/portrait-768.webp"
+      media="(min-width: 481px) and (max-width: 768px)"
+    />
+    <link
+      rel="preload"
+      as="image"
+      type="image/webp"
+      href="/images/portrait-1200.webp"
+      media="(min-width: 769px)"
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -16,6 +37,13 @@
       rel="stylesheet"
     />
     <title>עדי בדש | מאיירת ספרי ילדים</title>
+    <style>
+      html.is-app-loading,
+      html.is-app-loading body {
+        overflow: hidden;
+        background: #fbf7f0;
+      }
+    </style>
   </head>
   <body>
     <div id="app"></div>

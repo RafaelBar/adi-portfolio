@@ -4,9 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "images:optimize": "node scripts/optimize-images.mjs",
     "gallery:sync": "node scripts/generate-gallery.mjs",
-    "dev": "npm run gallery:sync && vite",
-    "build": "npm run gallery:sync && vue-tsc -b && vite build",
+    "dev": "npm run images:optimize && npm run gallery:sync && vite",
+    "build": "npm run images:optimize && npm run gallery:sync && vue-tsc -b && vite build",
     "preview": "vite preview"
   },
   "dependencies": {

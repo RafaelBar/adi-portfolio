@@ -1,45 +1,66 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { profile } from '@/data/profile'
+import {
+  portraitAssets,
+  portraitDefaultSrc,
+  portraitSizes,
+  portraitSrcset,
+} from '@/data/portrait'
+import { useAppLoader } from '@/composables/useAppLoader'
+import OptimizedImage from '@/components/ui/OptimizedImage.vue'
 import ScrollReveal from '@/components/ui/ScrollReveal.vue'
 
 const { t } = useI18n()
+const { markPortraitReady } = useAppLoader()
 </script>
 
 <template>
   <section id="hero" class="hero section">
     <div class="hero__inner container">
-      <ScrollReveal class="hero__area-intro">
-        <div class="hero__intro">
-          <p class="hero__greeting">{{ t('hero.greeting') }}</p>
-          <h1 class="hero__name font-brand">{{ t('profile.name') }}</h1>
-          <p class="hero__tagline">{{ t('hero.tagline') }}</p>
-        </div>
-      </ScrollReveal>
+      <div class="hero__copy">
+        <ScrollReveal class="hero__area-intro">
+          <div class="hero__intro">
+            <p class="hero__greeting">{{ t('hero.greeting') }}</p>
+            <h1 class="hero__name font-brand">{{ t('profile.name') }}</h1>
+            <p class="hero__tagline">{{ t('hero.tagline') }}</p>
+          </div>
+        </ScrollReveal>
+
+        <ScrollReveal class="hero__area-hook">
+          <p class="hero__hook">{{ t('hero.hook') }}</p>
+        </ScrollReveal>
+
+        <ScrollReveal class="hero__area-invitation">
+          <p class="hero__invitation">{{ t('hero.invitation') }}</p>
+        </ScrollReveal>
+
+        <ScrollReveal class="hero__area-actions">
+          <div class="hero__actions">
+            <a href="#gallery" class="btn btn--primary">{{ t('hero.ctaGallery') }}</a>
+            <a href="#contact" class="btn btn--project">{{ t('hero.ctaContact') }}</a>
+          </div>
+        </ScrollReveal>
+      </div>
 
       <ScrollReveal class="hero__area-visual">
         <div class="hero__visual" aria-hidden="true">
           <div class="hero__frame">
-            <img :src="profile.portrait" :alt="t('profile.name')" class="hero__portrait" />
+            <OptimizedImage
+              :src="portraitDefaultSrc"
+              :srcset="portraitSrcset()"
+              :sizes="portraitSizes"
+              :width="portraitAssets.width"
+              :height="portraitAssets.height"
+              :alt="t('profile.name')"
+              img-class="hero__portrait"
+              priority
+              transparent
+              @load="markPortraitReady"
+            />
           </div>
           <div class="hero__accent hero__accent--1" />
           <div class="hero__accent hero__accent--2" />
         </div>
-      </ScrollReveal>
-
-      <ScrollReveal class="hero__area-actions">
-        <div class="hero__actions">
-          <a href="#gallery" class="btn btn--primary">{{ t('hero.ctaGallery') }}</a>
-          <a href="#contact" class="btn btn--project">{{ t('hero.ctaContact') }}</a>
-        </div>
-      </ScrollReveal>
-
-      <ScrollReveal class="hero__area-hook">
-        <p class="hero__hook">{{ t('hero.hook') }}</p>
-      </ScrollReveal>
-
-      <ScrollReveal class="hero__area-invitation">
-        <p class="hero__invitation">{{ t('hero.invitation') }}</p>
       </ScrollReveal>
     </div>
   </section>
@@ -54,33 +75,19 @@ const { t } = useI18n()
 .hero__inner {
   display: grid;
   grid-template-columns: 0.92fr 1.15fr;
-  grid-template-areas:
-    'intro visual'
-    'hook visual'
-    'invitation visual'
-    'actions visual';
+  grid-template-areas: 'copy visual';
   align-items: center;
   gap: clamp(2rem, 5vw, 4rem);
 }
 
-.hero__area-intro {
-  grid-area: intro;
-}
-
-.hero__area-hook {
-  grid-area: hook;
+.hero__copy {
+  grid-area: copy;
+  display: flex;
+  flex-direction: column;
 }
 
 .hero__area-visual {
   grid-area: visual;
-}
-
-.hero__area-actions {
-  grid-area: actions;
-}
-
-.hero__area-invitation {
-  grid-area: invitation;
 }
 
 .hero__greeting {
@@ -187,11 +194,7 @@ const { t } = useI18n()
 }
 
 .hero__portrait {
-  display: block;
-  width: 100%;
-  height: auto;
   max-height: min(95vh, 64rem);
-  object-fit: contain;
 }
 
 .hero__accent {
@@ -225,14 +228,33 @@ const { t } = useI18n()
 
 @media (max-width: 768px) {
   .hero__inner {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      'intro'
-      'visual'
-      'hook'
-      'invitation'
-      'actions';
+    display: flex;
+    flex-direction: column;
     gap: clamp(1.5rem, 4vw, 2rem);
+  }
+
+  .hero__copy {
+    display: contents;
+  }
+
+  .hero__area-intro {
+    order: 1;
+  }
+
+  .hero__area-visual {
+    order: 2;
+  }
+
+  .hero__area-hook {
+    order: 3;
+  }
+
+  .hero__area-invitation {
+    order: 4;
+  }
+
+  .hero__area-actions {
+    order: 5;
   }
 
   .hero__tagline {

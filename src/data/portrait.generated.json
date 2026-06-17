@@ -1,0 +1,23 @@
+{
+  "width": 2064,
+  "height": 1950,
+  "fallback": "/primary-image.png",
+  "placeholder": "/images/portrait-48.webp",
+  "sources": [
+    {
+      "width": 480,
+      "height": 453,
+      "src": "/images/portrait-480.webp"
+    },
+    {
+      "width": 768,
+      "height": 726,
+      "src": "/images/portrait-768.webp"
+    },
+    {
+      "width": 1200,
+      "height": 1134,
+      "src": "/images/portrait-1200.webp"
+    }
+  ]
+}

@@ -6,13 +6,18 @@ export interface GalleryItem {
   id: string
   category: GalleryCategory
   image: string
+  thumb: string
   width: number
   height: number
+  thumbWidth: number
+  thumbHeight: number
 }
+
+export type ServiceIconName = 'draw' | 'spread'
 
 export interface ServiceItem {
   id: string
-  icon: string
+  icon: ServiceIconName
   titleKey: string
   descriptionKey: string
 }

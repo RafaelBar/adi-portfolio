@@ -3,14 +3,9 @@ import { useI18n } from 'vue-i18n'
 import { services } from '@/data/services'
 import SectionHeading from '@/components/ui/SectionHeading.vue'
 import ScrollReveal from '@/components/ui/ScrollReveal.vue'
+import ServiceIcon from '@/components/ui/ServiceIcon.vue'
 
 const { t } = useI18n()
-
-const icons: Record<string, string> = {
-  book: '📖',
-  palette: '🎨',
-  sparkle: '✨',
-}
 </script>
 
 <template>
@@ -27,7 +22,7 @@ const icons: Record<string, string> = {
       <div class="services__grid">
         <ScrollReveal v-for="service in services" :key="service.id">
           <article class="services__card">
-            <span class="services__icon" aria-hidden="true">{{ icons[service.icon] }}</span>
+            <ServiceIcon :name="service.icon" class="services__icon" />
             <h3 class="services__title">{{ t(service.titleKey) }}</h3>
             <p class="services__description">{{ t(service.descriptionKey) }}</p>
           </article>
@@ -56,7 +51,6 @@ const icons: Record<string, string> = {
 }
 
 .services__icon {
-  font-size: 1.75rem;
   display: block;
   margin-bottom: var(--space-md);
 }
