@@ -4,6 +4,8 @@ import router from './router'
 import { i18n, applyDocumentLocale, getPreferredLocale } from './i18n'
 import './assets/styles/global.css'
 
-applyDocumentLocale(getPreferredLocale())
+const preferredLocale = getPreferredLocale()
+i18n.global.locale.value = preferredLocale
+applyDocumentLocale(preferredLocale)
 
 createApp(App).use(router).use(i18n).mount('#app')

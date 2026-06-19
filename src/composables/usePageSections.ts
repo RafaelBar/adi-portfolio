@@ -13,13 +13,26 @@ export function usePageSections() {
     route.name === 'about' ? ABOUT_PAGE_SECTIONS : HOME_PAGE_SECTIONS,
   )
 
-  let sectionObserver: IntersectionObserver | null = null
-
   function scrollToSection(id: string) {
     const el = document.getElementById(id)
     if (!el) return
+    activeId.value = id
     const top = el.getBoundingClientRect().top + window.scrollY - NAV_OFFSET
     window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
+  }
+
+  function updateActiveSectionFromScroll() {
+    const marker = window.scrollY + NAV_OFFSET + 24
+    let current = sections.value[0]?.id ?? ''
+
+    for (const section of sections.value) {
+      const el = document.getElementById(section.id)
+      if (!el) continue
+      const top = el.getBoundingClientRect().top + window.scrollY
+      if (top <= marker) current = section.id
+    }
+
+    activeId.value = current
   }
 
   function updateScrollProgress() {
@@ -27,37 +40,15 @@ export function usePageSections() {
     scrollProgress.value = max > 0 ? Math.min(1, window.scrollY / max) : 0
   }
 
-  function observeSections() {
-    sectionObserver?.disconnect()
-    sectionObserver = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)
-
-        const top = visible[0]?.target.id
-        if (top) activeId.value = top
-      },
-      {
-        rootMargin: '-15% 0px -55% 0px',
-        threshold: [0, 0.15, 0.35, 0.55, 0.75, 1],
-      },
-    )
-
-    for (const section of sections.value) {
-      const el = document.getElementById(section.id)
-      if (el) sectionObserver.observe(el)
-    }
-  }
-
   function onScroll() {
     updateScrollProgress()
+    updateActiveSectionFromScroll()
   }
 
   function resetForRoute() {
     activeId.value = sections.value[0]?.id ?? ''
     requestAnimationFrame(() => {
-      observeSections()
+      updateActiveSectionFromScroll()
       updateScrollProgress()
     })
   }
@@ -68,7 +59,6 @@ export function usePageSections() {
   })
 
   onUnmounted(() => {
-    sectionObserver?.disconnect()
     window.removeEventListener('scroll', onScroll)
   })
 

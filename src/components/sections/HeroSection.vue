@@ -266,7 +266,18 @@ const { markPortraitReady } = useAppLoader()
   }
 
   .hero__actions {
+    flex-wrap: nowrap;
+    gap: var(--space-sm);
     margin-bottom: 0;
+  }
+
+  .hero__actions :deep(.btn) {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0.75rem 0.875rem;
+    font-size: 0.8125rem;
+    line-height: 1.2;
+    text-align: center;
   }
 
   .hero__frame {

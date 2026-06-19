@@ -225,6 +225,11 @@ onUnmounted(() => {
   }
 
   .nav--en .nav__brand-cluster {
+    margin-left: 0;
+    margin-right: auto;
+  }
+
+  .nav--en .nav__toggle {
     margin-left: auto;
   }
 
