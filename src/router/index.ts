@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import AboutView from '@/views/AboutView.vue'
-import { getPreferredLocale, isLocaleCode } from '@/i18n'
+import { getPreferredLocale, isLocaleCode, i18n, applyDocumentLocale, LOCALE_STORAGE_KEY } from '@/i18n'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -36,6 +36,16 @@ const router = createRouter({
     }
     return { top: 0 }
   },
+})
+
+router.beforeEach((to) => {
+  const raw = to.params.locale
+  const value = Array.isArray(raw) ? raw[0] : raw
+  if (value && isLocaleCode(value)) {
+    i18n.global.locale.value = value
+    applyDocumentLocale(value)
+    localStorage.setItem(LOCALE_STORAGE_KEY, value)
+  }
 })
 
 export default router

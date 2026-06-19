@@ -11,8 +11,6 @@ const portraitSource = path.join(publicDir, 'primary-image.png')
 const portraitMetaPath = path.join(root, 'src', 'data', 'portrait.generated.json')
 
 const PORTRAIT_WIDTHS = [48, 480, 768, 1200]
-
-async function ensurePortraitVariants() {
   await mkdir(imagesDir, { recursive: true })
 
   const source = sharp(portraitSource)

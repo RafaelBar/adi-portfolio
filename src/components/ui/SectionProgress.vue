@@ -3,7 +3,7 @@ import { useI18n } from 'vue-i18n'
 import { usePageSections } from '@/composables/usePageSections'
 
 const { locale, t } = useI18n()
-const { sections, activeId, scrollProgress, scrollToSection } = usePageSections()
+const { sections, activeId, sectionProgress, scrollToSection } = usePageSections()
 </script>
 
 <template>
@@ -11,7 +11,7 @@ const { sections, activeId, scrollProgress, scrollToSection } = usePageSections(
     class="section-progress"
     :class="`section-progress--${locale}`"
     :aria-label="t('sectionNav.label')"
-    :style="{ '--scroll-progress': String(scrollProgress) }"
+    :style="{ '--scroll-progress': String(sectionProgress) }"
   >
     <ol class="section-progress__list">
       <li v-for="section in sections" :key="section.id" class="section-progress__item">

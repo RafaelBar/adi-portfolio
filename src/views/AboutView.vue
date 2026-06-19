@@ -5,9 +5,6 @@ import ProcessSection from '@/components/sections/ProcessSection.vue'
 import ServicesSection from '@/components/sections/ServicesSection.vue'
 import AboutSection from '@/components/sections/AboutSection.vue'
 import SectionSeparator from '@/components/ui/SectionSeparator.vue'
-import { useSeo } from '@/composables/useSeo'
-
-useSeo()
 </script>
 
 <template>

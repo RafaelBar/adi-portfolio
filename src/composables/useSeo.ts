@@ -2,9 +2,10 @@ import { watchEffect } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 export function useSeo() {
-  const { t } = useI18n()
+  const { t, locale } = useI18n()
 
   watchEffect(() => {
+    locale.value
     document.title = t('meta.title')
 
     let description = document.querySelector('meta[name="description"]')
