@@ -112,7 +112,6 @@ watch(activeFilter, () => {
         <SectionHeading
           label-key="gallery.label"
           title-key="gallery.title"
-          subtitle-key="gallery.subtitle"
         />
       </ScrollReveal>
 

@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { onMounted, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useAppLoader } from '@/composables/useAppLoader'
 
+const { t } = useI18n()
 const { isVisible, startLoader } = useAppLoader()
 
 onMounted(() => {
@@ -22,7 +24,7 @@ watch(isVisible, (visible) => {
       class="app-loader"
       role="status"
       aria-live="polite"
-      aria-label="טוען את האתר"
+      :aria-label="t('loader.ariaLabel')"
     >
       <div class="app-loader__paper" aria-hidden="true" />
 
@@ -53,8 +55,8 @@ watch(isVisible, (visible) => {
           />
         </svg>
 
-        <p class="app-loader__label font-brand">עדי בדש</p>
-        <p class="app-loader__hint">מאיירת ספרי ילדים</p>
+        <p class="app-loader__label font-brand">{{ t('profile.name') }}</p>
+        <p class="app-loader__hint">{{ t('loader.hint') }}</p>
       </div>
     </div>
   </Transition>

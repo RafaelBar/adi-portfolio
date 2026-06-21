@@ -102,7 +102,6 @@
   "gallery": {
     "label": "Portfolio",
     "title": "Selected work",
-    "subtitle": "Browse by project type — a glimpse into visual languages shaped for story, commission, and brand.",
     "categories": {
       "selected-work": "Selected work",
       "full-book-spread": "Full book spread"
@@ -143,5 +142,9 @@
     "toggleHe": "HE",
     "toggleEn": "EN",
     "ariaLabel": "Language"
+  },
+  "loader": {
+    "ariaLabel": "Loading website",
+    "hint": "Children's book illustrator"
   }
 }
