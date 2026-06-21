@@ -5,7 +5,7 @@ export const profile: Profile = {
   phone: '+972528823790',
   portrait: '/primary-image.png',
   instagram: 'https://www.instagram.com/badassprints_/',
-  facebook: 'https://www.facebook.com/AdiBadasss',
+  facebook: 'https://www.facebook.com/profile.php?id=61556188187674',
 }
 
 export function whatsappUrl(phone: string): string {
