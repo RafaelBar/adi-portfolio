@@ -110,6 +110,7 @@ const { markPortraitReady } = useAppLoader()
   font-size: clamp(3rem, 8vw, 5rem);
   line-height: 1.05;
   margin-bottom: var(--space-md);
+  color: var(--color-lavender-deep);
 }
 
 .hero__tagline {
