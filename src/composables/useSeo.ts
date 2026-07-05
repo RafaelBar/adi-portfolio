@@ -22,7 +22,6 @@ export function useSeo() {
     locale.value
     const code = locale.value as LocaleCode
     const title = t('meta.title')
-    const description = t('meta.description')
     const pageUrl = absoluteUrl(route.path)
     const altLocale = ogLocaleFor(code === 'he' ? 'en' : 'he')
     const imageAlt =
@@ -30,15 +29,12 @@ export function useSeo() {
 
     document.title = title
 
-    setMeta('name', 'description', description)
     setMeta('property', 'og:title', title)
-    setMeta('property', 'og:description', description)
     setMeta('property', 'og:url', pageUrl)
     setMeta('property', 'og:locale', ogLocaleFor(code))
     setMeta('property', 'og:locale:alternate', altLocale)
     setMeta('property', 'og:image:alt', imageAlt)
     setMeta('name', 'twitter:title', title)
-    setMeta('name', 'twitter:description', description)
     setMeta('name', 'twitter:image', absoluteUrl(OG_IMAGE_PATH))
   })
 }

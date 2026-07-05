@@ -17,27 +17,18 @@ async function loadLocale(code) {
   const data = JSON.parse(await readFile(filePath, 'utf8'))
   return {
     title: i18nTitle(data.meta.title),
-    description: data.meta.description,
     imageAlt: code === 'he' ? 'עדי בדש — מאיירת ספרי ילדים' : "Adi Badash — children's book illustrator",
   }
 }
 
-function applySeo(html, { lang, dir, title, description, imageAlt, url, ogLocale, altLocale }) {
+function applySeo(html, { lang, dir, title, imageAlt, url, ogLocale, altLocale }) {
   return html
     .replace(/<html lang="[^"]*"/, `<html lang="${lang}"`)
     .replace(/ dir="[^"]*"/, ` dir="${dir}"`)
     .replace(/<title>[^<]*<\/title>/, `<title>${title}</title>`)
     .replace(
-      /<meta\s+name="description"\s+content="[^"]*"\s*\/?>/,
-      `<meta name="description" content="${description}" />`,
-    )
-    .replace(
       /<meta property="og:title" content="[^"]*"\s*\/?>/,
       `<meta property="og:title" content="${title}" />`,
-    )
-    .replace(
-      /<meta\s+property="og:description"\s+content="[^"]*"\s*\/?>/,
-      `<meta property="og:description" content="${description}" />`,
     )
     .replace(
       /<meta property="og:url" content="[^"]*"\s*\/?>/,
@@ -59,10 +50,6 @@ function applySeo(html, { lang, dir, title, description, imageAlt, url, ogLocale
       /<meta name="twitter:title" content="[^"]*"\s*\/?>/,
       `<meta name="twitter:title" content="${title}" />`,
     )
-    .replace(
-      /<meta\s+name="twitter:description"\s+content="[^"]*"\s*\/?>/,
-      `<meta name="twitter:description" content="${description}" />`,
-    )
 }
 
 async function main() {
@@ -76,7 +63,6 @@ async function main() {
     lang: 'he',
     dir: 'rtl',
     title: he.title,
-    description: he.description,
     imageAlt: he.imageAlt,
     url: `${SITE_URL}/he`,
     ogLocale: 'he_IL',
@@ -87,7 +73,6 @@ async function main() {
     lang: 'en',
     dir: 'ltr',
     title: en.title,
-    description: en.description,
     imageAlt: en.imageAlt,
     url: `${SITE_URL}/en`,
     ogLocale: 'en_US',
