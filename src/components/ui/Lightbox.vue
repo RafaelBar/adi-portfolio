@@ -82,68 +82,26 @@ watch(
       @click.self="emit('close')"
     >
       <div class="lightbox__frame">
-        <button
-          v-if="hasPrev"
-          type="button"
-          class="lightbox__control lightbox__nav lightbox__nav--prev lightbox__nav--desktop"
-          :aria-label="t('gallery.prev')"
-          @click="goPrev"
-        >
-          <svg class="lightbox__control-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path
-              d="M9 6l6 6-6 6"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-        </button>
-
         <div class="lightbox__panel">
-          <div class="lightbox__header">
-            <div class="lightbox__header-nav">
-              <button
-                v-if="hasPrev"
-                type="button"
-                class="lightbox__control lightbox__nav lightbox__nav--prev lightbox__nav--mobile"
-                :aria-label="t('gallery.prev')"
-                @click="goPrev"
-              >
-                <svg class="lightbox__control-icon" viewBox="0 0 24 24" aria-hidden="true">
-                  <path
-                    d="M9 6l6 6-6 6"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </button>
-              <span v-else class="lightbox__header-spacer" aria-hidden="true" />
-
-              <button
-                v-if="hasNext"
-                type="button"
-                class="lightbox__control lightbox__nav lightbox__nav--next lightbox__nav--mobile"
-                :aria-label="t('gallery.next')"
-                @click="goNext"
-              >
-                <svg class="lightbox__control-icon" viewBox="0 0 24 24" aria-hidden="true">
-                  <path
-                    d="M9 6l6 6-6 6"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </button>
-              <span v-else class="lightbox__header-spacer" aria-hidden="true" />
-            </div>
+          <div class="lightbox__body">
+            <button
+              v-if="hasPrev"
+              type="button"
+              class="lightbox__control lightbox__nav lightbox__nav--prev"
+              :aria-label="t('gallery.prev')"
+              @click="goPrev"
+            >
+              <svg class="lightbox__control-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M9 6l6 6-6 6"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
 
             <button
               type="button"
@@ -162,9 +120,26 @@ watch(
                 />
               </svg>
             </button>
-          </div>
 
-          <div class="lightbox__body">
+            <button
+              v-if="hasNext"
+              type="button"
+              class="lightbox__control lightbox__nav lightbox__nav--next"
+              :aria-label="t('gallery.next')"
+              @click="goNext"
+            >
+              <svg class="lightbox__control-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M9 6l6 6-6 6"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+
             <div ref="imageViewport" class="lightbox__viewport">
               <figure
                 class="lightbox__figure"
@@ -203,25 +178,6 @@ watch(
             />
           </p>
         </div>
-
-        <button
-          v-if="hasNext"
-          type="button"
-          class="lightbox__control lightbox__nav lightbox__nav--next lightbox__nav--desktop"
-          :aria-label="t('gallery.next')"
-          @click="goNext"
-        >
-          <svg class="lightbox__control-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path
-              d="M9 6l6 6-6 6"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-        </button>
       </div>
     </div>
   </Teleport>
@@ -275,7 +231,7 @@ watch(
     transform var(--transition);
 }
 
-.lightbox__control:hover {
+.lightbox__control:hover:not(.lightbox__nav):not(.lightbox__close) {
   background: rgba(255, 255, 255, 0.24);
   border-color: rgba(255, 255, 255, 0.42);
   transform: scale(1.06);
@@ -311,51 +267,41 @@ watch(
   background: #fff;
   border-color: rgba(61, 58, 54, 0.2);
   color: var(--color-ink);
-  transform: scale(1.04);
   box-shadow:
     0 4px 12px rgba(61, 58, 54, 0.1),
     0 10px 28px rgba(61, 58, 54, 0.12);
 }
 
-.lightbox__header {
+.lightbox__nav:hover {
+  transform: translateY(-50%) scale(1.04);
+}
+
+.lightbox__close:hover {
+  transform: scale(1.04);
+}
+
+.lightbox__close,
+.lightbox__nav {
   position: absolute;
-  top: var(--space-md);
-  inset-inline: var(--space-md);
   z-index: 5;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  pointer-events: none;
-}
-
-.lightbox__header .lightbox__control {
-  pointer-events: auto;
-}
-
-.lightbox__header-nav {
-  display: none;
-  align-items: center;
-  gap: var(--space-sm);
-  pointer-events: auto;
-}
-
-.lightbox__header-spacer {
-  display: none;
-  width: 2.875rem;
-  height: 2.875rem;
-  flex-shrink: 0;
-}
-
-.lightbox__close {
-  position: static;
-}
-
-.lightbox__nav--mobile {
-  display: none;
 }
 
 .lightbox__nav {
-  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.lightbox__nav--prev {
+  inset-inline-start: calc(-1 * (2.875rem + clamp(0.75rem, 2vw, 1.25rem)));
+}
+
+.lightbox__nav--next {
+  inset-inline-end: calc(-1 * (2.875rem + clamp(0.75rem, 2vw, 1.25rem)));
+}
+
+.lightbox__close {
+  top: var(--space-md);
+  inset-inline-end: 0;
 }
 
 .lightbox__panel {
@@ -368,7 +314,7 @@ watch(
   flex: 1 1 auto;
   min-width: 0;
   max-height: var(--lightbox-max-height);
-  overflow: hidden;
+  overflow: visible;
   border-radius: var(--radius-lg);
   background: var(--color-paper);
   box-shadow: var(--shadow-lift);
@@ -468,32 +414,24 @@ watch(
 
   .lightbox__panel {
     --lightbox-max-height: min(90vh, calc(100dvh - 2 * var(--space-md)));
-    padding-top: calc(var(--space-lg) + 2.875rem + var(--space-sm));
+    --lightbox-control-edge: -0.375rem;
   }
 
-  .lightbox__header {
-    justify-content: space-between;
+  .lightbox__nav--prev {
+    inset-inline-start: var(--lightbox-control-edge);
   }
 
-  .lightbox__header-nav {
-    display: flex;
+  .lightbox__nav--next {
+    inset-inline-end: var(--lightbox-control-edge);
   }
 
-  .lightbox__header-spacer {
-    display: block;
+  .lightbox__close {
+    top: -0.375rem;
+    inset-inline-end: var(--lightbox-control-edge);
   }
 
-  .lightbox__nav--desktop {
-    display: none;
-  }
-
-  .lightbox__nav--mobile {
-    display: inline-flex;
-  }
-
-  .lightbox__nav--mobile:disabled,
-  .lightbox__nav--mobile.lightbox__nav--placeholder {
-    visibility: hidden;
+  .lightbox__close:hover {
+    transform: scale(1.04);
   }
 
   .lightbox__viewport {
