@@ -13,16 +13,23 @@ export function parseGalleryImageHash(hash: string): string | null {
 }
 
 export function buildGalleryShareUrl(locale: LocaleCode, imageId: string): string {
-  return `${SITE_URL}/${locale}/i/${imageId}`
+  return `${SITE_URL}/${locale}/i/${imageId}.html`
 }
 
 export async function shareGalleryImage(options: {
   url: string
   title: string
 }): Promise<'shared' | 'copied'> {
+  const shareData: ShareData = { url: options.url, title: options.title }
+
   if (typeof navigator.share === 'function') {
+    if (typeof navigator.canShare === 'function' && !navigator.canShare(shareData)) {
+      await navigator.clipboard.writeText(options.url)
+      return 'copied'
+    }
+
     try {
-      await navigator.share({ title: options.title, url: options.url })
+      await navigator.share(shareData)
       return 'shared'
     } catch (error) {
       if (error instanceof DOMException && error.name === 'AbortError') {

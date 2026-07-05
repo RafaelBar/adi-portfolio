@@ -24,10 +24,13 @@ const router = createRouter({
     },
     {
       path: '/:locale(he|en)/i/:imageId',
-      redirect: (to) => ({
-        path: `/${String(to.params.locale)}`,
-        hash: `#gallery/${String(to.params.imageId)}`,
-      }),
+      redirect: (to) => {
+        const imageId = String(to.params.imageId).replace(/\.html$/i, '')
+        return {
+          path: `/${String(to.params.locale)}`,
+          hash: `#gallery/${imageId}`,
+        }
+      },
     },
     {
       path: '/:pathMatch(.*)*',

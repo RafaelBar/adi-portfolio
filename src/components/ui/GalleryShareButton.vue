@@ -139,7 +139,8 @@ onUnmounted(() => {
 
 .gallery-share--card .gallery-share__tooltip {
   bottom: calc(100% + 0.5rem);
-  inset-inline-end: 0;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .gallery-share:hover .gallery-share__tooltip,
@@ -182,37 +183,30 @@ onUnmounted(() => {
 }
 
 .gallery-share--card {
-  width: 2.125rem;
-  height: 2.125rem;
+  width: 2.875rem;
+  height: 2.875rem;
   border-radius: var(--radius-full);
-  color: rgba(255, 255, 255, 0.95);
-  background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 2px 12px rgba(61, 58, 54, 0.12);
+  color: var(--color-ink-soft);
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(61, 58, 54, 0.14);
+  backdrop-filter: blur(6px);
+  box-shadow:
+    0 2px 8px rgba(61, 58, 54, 0.08),
+    0 8px 24px rgba(61, 58, 54, 0.1);
 }
 
 .gallery-share--card .gallery-share__icon {
-  width: 0.9375rem;
-  height: 0.9375rem;
+  width: 1.2rem;
+  height: 1.2rem;
 }
 
 .gallery-share--card:hover {
-  background: rgba(255, 255, 255, 0.24);
-  border-color: rgba(255, 255, 255, 0.42);
-  color: #fff;
-  transform: scale(1.06);
-}
-
-@media (max-width: 768px) {
-  .gallery-share--card {
-    width: 2.375rem;
-    height: 2.375rem;
-  }
-
-  .gallery-share--card .gallery-share__icon {
-    width: 1rem;
-    height: 1rem;
-  }
+  background: #fff;
+  border-color: rgba(61, 58, 54, 0.2);
+  color: var(--color-ink);
+  transform: scale(1.04);
+  box-shadow:
+    0 4px 12px rgba(61, 58, 54, 0.1),
+    0 10px 28px rgba(61, 58, 54, 0.12);
 }
 </style>

@@ -3,6 +3,7 @@ import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { getGalleryCaption } from '@/data/gallery-captions'
 import GalleryShareFooter from '@/components/ui/GalleryShareFooter.vue'
+import GalleryShareButton from '@/components/ui/GalleryShareButton.vue'
 import type { GalleryItem } from '@/models/types'
 import type { LocaleCode } from '@/models/types'
 
@@ -124,6 +125,7 @@ watch(
               <figure class="lightbox__figure">
                 <img :src="item.image" :alt="caption" class="lightbox__image" />
                 <GalleryShareFooter
+                  class="lightbox__share-overlay"
                   :image-id="item.id"
                   :title="caption"
                 />
@@ -133,6 +135,12 @@ watch(
 
           <p class="lightbox__caption">
             <span class="lightbox__caption-text">{{ caption }}</span>
+            <GalleryShareButton
+              class="lightbox__share-inline"
+              variant="card"
+              :image-id="item.id"
+              :title="caption"
+            />
           </p>
         </div>
 
@@ -219,11 +227,8 @@ watch(
   display: block;
 }
 
-.lightbox__close {
-  position: absolute;
-  top: var(--space-md);
-  inset-inline-end: var(--space-md);
-  z-index: 5;
+.lightbox__close,
+.lightbox__nav {
   width: 2.875rem;
   height: 2.875rem;
   background: rgba(255, 255, 255, 0.96);
@@ -235,12 +240,14 @@ watch(
   backdrop-filter: blur(6px);
 }
 
-.lightbox__close .lightbox__control-icon {
+.lightbox__close .lightbox__control-icon,
+.lightbox__nav .lightbox__control-icon {
   width: 1.2rem;
   height: 1.2rem;
 }
 
-.lightbox__close:hover {
+.lightbox__close:hover,
+.lightbox__nav:hover {
   background: #fff;
   border-color: rgba(61, 58, 54, 0.2);
   color: var(--color-ink);
@@ -248,6 +255,13 @@ watch(
   box-shadow:
     0 4px 12px rgba(61, 58, 54, 0.1),
     0 10px 28px rgba(61, 58, 54, 0.12);
+}
+
+.lightbox__close {
+  position: absolute;
+  top: var(--space-md);
+  inset-inline-end: var(--space-md);
+  z-index: 5;
 }
 
 .lightbox__nav {
@@ -330,6 +344,10 @@ watch(
   max-width: 36rem;
 }
 
+.lightbox__share-inline {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .lightbox {
     padding: var(--space-md);
@@ -349,30 +367,44 @@ watch(
   .lightbox__nav {
     position: absolute;
     top: 50%;
-    z-index: 3;
-    width: 2.5rem;
-    height: 2.5rem;
-    background: rgba(255, 255, 255, 0.94);
-    border: none;
-    color: var(--color-ink);
-    box-shadow: var(--shadow-soft);
+    z-index: 10;
     transform: translateY(-50%);
   }
 
   .lightbox__nav:hover {
-    transform: translateY(-50%) scale(1.06);
+    transform: translateY(-50%) scale(1.04);
   }
 
   .lightbox__nav--prev {
-    inset-inline-start: var(--space-xs);
+    inset-inline-start: 0.25rem;
   }
 
   .lightbox__nav--next {
-    inset-inline-end: var(--space-xs);
+    inset-inline-end: 0.25rem;
   }
 
   .lightbox__viewport {
     padding-inline: var(--space-lg);
+  }
+
+  .lightbox__share-overlay {
+    display: none;
+  }
+
+  .lightbox__caption {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+  }
+
+  .lightbox__caption-text {
+    flex: 0 1 auto;
+  }
+
+  .lightbox__share-inline {
+    display: inline-flex;
+    flex-shrink: 0;
   }
 }
 </style>

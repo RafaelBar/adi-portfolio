@@ -43,7 +43,23 @@ async function loadGalleryItems() {
   return items
 }
 
-function captionPlaceholder(index, locale) {
+async function loadCaptionOverrides() {
+  const filePath = path.join(root, 'src', 'data', 'gallery-captions.ts')
+  const source = await readFile(filePath, 'utf8')
+  const overrides = {}
+  const entryRe =
+    /['"]([^'"]+)['"]\s*:\s*\{\s*he:\s*['"]([^'"]*)['"]\s*,\s*en:\s*['"]([^'"]*)['"]\s*\}/g
+
+  for (const match of source.matchAll(entryRe)) {
+    overrides[match[1]] = { he: match[2], en: match[3] }
+  }
+
+  return overrides
+}
+
+function getGalleryCaption(id, locale, index, overrides) {
+  const override = overrides[id]?.[locale]
+  if (override) return override
   return locale === 'he' ? `תיאור איור ${index}` : `Illustration caption ${index}`
 }
 
@@ -55,10 +71,9 @@ function escapeHtml(value) {
     .replace(/>/g, '&gt;')
 }
 
-function buildSharePage({ locale, item, index, meta }) {
-  const caption = captionPlaceholder(index, locale)
+function buildSharePage({ locale, item, caption, meta }) {
   const title = `${caption} | ${meta.siteTitle}`
-  const shareUrl = `${SITE_URL}/${locale}/i/${item.id}`
+  const shareUrl = `${SITE_URL}/${locale}/i/${item.id}.html`
   const imageUrl = `${SITE_URL}${item.image}`
   const appUrl = `/${locale}#gallery/${item.id}`
 
@@ -72,7 +87,7 @@ function buildSharePage({ locale, item, index, meta }) {
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Adi Badash" />
     <meta property="og:title" content="${escapeHtml(caption)}" />
-    <meta property="og:description" content="" />
+    <meta property="og:description" content="${escapeHtml(caption)}" />
     <meta property="og:url" content="${shareUrl}" />
     <meta property="og:locale" content="${meta.ogLocale}" />
     <meta property="og:locale:alternate" content="${meta.altLocale}" />
@@ -82,7 +97,7 @@ function buildSharePage({ locale, item, index, meta }) {
     <meta property="og:image:alt" content="${escapeHtml(caption)}" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="${escapeHtml(caption)}" />
-    <meta name="twitter:description" content="" />
+    <meta name="twitter:description" content="${escapeHtml(caption)}" />
     <meta name="twitter:image" content="${imageUrl}" />
     <meta http-equiv="refresh" content="0;url=${appUrl}" />
     <script>location.replace(${JSON.stringify(appUrl)})</script>
@@ -96,6 +111,7 @@ function buildSharePage({ locale, item, index, meta }) {
 
 async function main() {
   const items = await loadGalleryItems()
+  const captionOverrides = await loadCaptionOverrides()
   const heMeta = await loadLocaleMeta('he')
   const enMeta = await loadLocaleMeta('en')
 
@@ -104,17 +120,20 @@ async function main() {
       ['he', heMeta],
       ['en', enMeta],
     ]) {
-      const dir = path.join(distDir, locale, 'i', item.id)
-      await mkdir(dir, { recursive: true })
-      await writeFile(
-        path.join(dir, 'index.html'),
-        buildSharePage({ locale, item, index: index + 1, meta }),
-        'utf8',
-      )
+      const caption = getGalleryCaption(item.id, locale, index + 1, captionOverrides)
+      const html = buildSharePage({ locale, item, caption, meta })
+      const shareDir = path.join(distDir, locale, 'i')
+      await mkdir(shareDir, { recursive: true })
+
+      await writeFile(path.join(shareDir, `${item.id}.html`), html, 'utf8')
+
+      const nestedDir = path.join(shareDir, item.id)
+      await mkdir(nestedDir, { recursive: true })
+      await writeFile(path.join(nestedDir, 'index.html'), html, 'utf8')
     }
   }
 
-  console.log(`  share: ${items.length * 2} OG page(s) → dist/{he,en}/i/*/index.html`)
+  console.log(`  share: ${items.length * 2} OG page(s) → dist/{he,en}/i/*.html`)
 }
 
 main().catch((error) => {
