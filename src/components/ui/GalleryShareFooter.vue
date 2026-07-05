@@ -12,7 +12,7 @@ defineProps<{
     <GalleryShareButton
       :image-id="imageId"
       :title="title"
-      variant="card"
+      variant="overlay"
     />
   </div>
 </template>
@@ -26,11 +26,11 @@ defineProps<{
   display: flex;
   justify-content: flex-end;
   align-items: flex-end;
-  padding: 2.75rem var(--space-md) var(--space-md);
+  padding: 2rem var(--space-md) var(--space-md);
   background: linear-gradient(
     to top,
-    rgba(61, 58, 54, 0.42) 0%,
-    rgba(61, 58, 54, 0.12) 45%,
+    rgba(61, 58, 54, 0.22) 0%,
+    rgba(61, 58, 54, 0.06) 38%,
     transparent 100%
   );
   opacity: 0;
@@ -46,11 +46,11 @@ defineProps<{
 @media (max-width: 768px) {
   .gallery-share-footer {
     opacity: 1;
-    padding-top: 2.25rem;
+    padding-top: 1.75rem;
     background: linear-gradient(
       to top,
-      rgba(61, 58, 54, 0.34) 0%,
-      rgba(61, 58, 54, 0.08) 50%,
+      rgba(61, 58, 54, 0.2) 0%,
+      rgba(61, 58, 54, 0.05) 42%,
       transparent 100%
     );
   }

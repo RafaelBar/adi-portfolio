@@ -8,7 +8,7 @@ const props = withDefaults(
   defineProps<{
     imageId: string
     title: string
-    variant?: 'card' | 'caption'
+    variant?: 'overlay' | 'panel' | 'caption'
   }>(),
   {
     variant: 'caption',
@@ -53,7 +53,7 @@ onUnmounted(() => {
     @click="onShare"
   >
     <svg class="gallery-share__icon" viewBox="0 0 24 24" aria-hidden="true">
-      <template v-if="variant === 'card'">
+      <template v-if="variant === 'overlay' || variant === 'panel'">
         <circle cx="18" cy="5" r="2.75" fill="none" stroke="currentColor" stroke-width="1.75" />
         <circle cx="6" cy="12" r="2.75" fill="none" stroke="currentColor" stroke-width="1.75" />
         <circle cx="18" cy="19" r="2.75" fill="none" stroke="currentColor" stroke-width="1.75" />
@@ -137,7 +137,13 @@ onUnmounted(() => {
   transition: opacity var(--transition);
 }
 
-.gallery-share--card .gallery-share__tooltip {
+.gallery-share--overlay .gallery-share__tooltip {
+  bottom: calc(100% + 0.5rem);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.gallery-share--panel .gallery-share__tooltip {
   bottom: calc(100% + 0.5rem);
   left: 50%;
   transform: translateX(-50%);
@@ -182,7 +188,23 @@ onUnmounted(() => {
     0 10px 24px rgba(61, 58, 54, 0.1);
 }
 
-.gallery-share--card {
+.gallery-share--overlay {
+  width: 2.375rem;
+  height: 2.375rem;
+  border-radius: var(--radius-full);
+  color: rgba(255, 255, 255, 0.96);
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 2px 16px rgba(61, 58, 54, 0.14);
+}
+
+.gallery-share--overlay .gallery-share__icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.gallery-share--panel {
   width: 2.875rem;
   height: 2.875rem;
   border-radius: var(--radius-full);
@@ -195,12 +217,12 @@ onUnmounted(() => {
     0 8px 24px rgba(61, 58, 54, 0.1);
 }
 
-.gallery-share--card .gallery-share__icon {
+.gallery-share--panel .gallery-share__icon {
   width: 1.2rem;
   height: 1.2rem;
 }
 
-.gallery-share--card:hover {
+.gallery-share--panel:hover {
   background: #fff;
   border-color: rgba(61, 58, 54, 0.2);
   color: var(--color-ink);

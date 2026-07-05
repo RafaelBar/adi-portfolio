@@ -28,15 +28,16 @@ async function loadGalleryItems() {
   const source = await readFile(filePath, 'utf8')
   const items = []
   const blockRe =
-    /id:\s*'([^']+)',\s*category:\s*'([^']+)',\s*image:\s*'([^']+)',\s*thumb:\s*'([^']+)',\s*width:\s*(\d+),\s*height:\s*(\d+)/g
+    /id:\s*'([^']+)',\s*category:\s*'([^']+)',\s*image:\s*'([^']+)',\s*display:\s*'([^']+)',\s*thumb:\s*'([^']+)',\s*width:\s*(\d+),\s*height:\s*(\d+)/g
 
   for (const match of source.matchAll(blockRe)) {
     items.push({
       id: match[1],
       category: match[2],
       image: match[3],
-      width: Number(match[5]),
-      height: Number(match[6]),
+      display: match[4],
+      width: Number(match[6]),
+      height: Number(match[7]),
     })
   }
 

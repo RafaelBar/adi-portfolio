@@ -85,7 +85,7 @@ watch(
         <button
           v-if="hasPrev"
           type="button"
-          class="lightbox__control lightbox__nav lightbox__nav--prev"
+          class="lightbox__control lightbox__nav lightbox__nav--prev lightbox__nav--desktop"
           :aria-label="t('gallery.prev')"
           @click="goPrev"
         >
@@ -102,28 +102,86 @@ watch(
         </button>
 
         <div class="lightbox__panel">
-          <button
-            type="button"
-            class="lightbox__control lightbox__close"
-            :aria-label="t('gallery.close')"
-            @click="emit('close')"
-          >
-            <svg class="lightbox__control-icon" viewBox="0 0 24 24" aria-hidden="true">
-              <path
-                d="M8 8l8 8M16 8l-8 8"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-          </button>
+          <div class="lightbox__header">
+            <button
+              v-if="hasPrev"
+              type="button"
+              class="lightbox__control lightbox__nav lightbox__nav--prev lightbox__nav--mobile"
+              :aria-label="t('gallery.prev')"
+              @click="goPrev"
+            >
+              <svg class="lightbox__control-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M9 6l6 6-6 6"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+            <span v-else class="lightbox__header-spacer" aria-hidden="true" />
+
+            <button
+              type="button"
+              class="lightbox__control lightbox__close"
+              :aria-label="t('gallery.close')"
+              @click="emit('close')"
+            >
+              <svg class="lightbox__control-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M8 8l8 8M16 8l-8 8"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+
+            <button
+              v-if="hasNext"
+              type="button"
+              class="lightbox__control lightbox__nav lightbox__nav--next lightbox__nav--mobile"
+              :aria-label="t('gallery.next')"
+              @click="goNext"
+            >
+              <svg class="lightbox__control-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M9 6l6 6-6 6"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+            <span v-else class="lightbox__header-spacer" aria-hidden="true" />
+          </div>
 
           <div class="lightbox__body">
             <div ref="imageViewport" class="lightbox__viewport">
-              <figure class="lightbox__figure">
-                <img :src="item.image" :alt="caption" class="lightbox__image" />
+              <figure
+                class="lightbox__figure"
+                :style="{ backgroundImage: `url(${item.thumb})` }"
+              >
+                <picture>
+                  <source
+                    :srcset="item.display"
+                    media="(max-width: 768px)"
+                    type="image/webp"
+                  />
+                  <img
+                    :src="item.image"
+                    :alt="caption"
+                    class="lightbox__image"
+                    decoding="async"
+                    fetchpriority="high"
+                  />
+                </picture>
                 <GalleryShareFooter
                   class="lightbox__share-overlay"
                   :image-id="item.id"
@@ -137,7 +195,7 @@ watch(
             <span class="lightbox__caption-text">{{ caption }}</span>
             <GalleryShareButton
               class="lightbox__share-inline"
-              variant="card"
+              variant="panel"
               :image-id="item.id"
               :title="caption"
             />
@@ -147,7 +205,7 @@ watch(
         <button
           v-if="hasNext"
           type="button"
-          class="lightbox__control lightbox__nav lightbox__nav--next"
+          class="lightbox__control lightbox__nav lightbox__nav--next lightbox__nav--desktop"
           :aria-label="t('gallery.next')"
           @click="goNext"
         >
@@ -257,11 +315,34 @@ watch(
     0 10px 28px rgba(61, 58, 54, 0.12);
 }
 
-.lightbox__close {
+.lightbox__header {
   position: absolute;
   top: var(--space-md);
-  inset-inline-end: var(--space-md);
+  inset-inline: var(--space-md);
   z-index: 5;
+  display: block;
+  pointer-events: none;
+}
+
+.lightbox__header .lightbox__control {
+  pointer-events: auto;
+}
+
+.lightbox__header-spacer {
+  display: none;
+  width: 2.875rem;
+  height: 2.875rem;
+  flex-shrink: 0;
+}
+
+.lightbox__close {
+  position: absolute;
+  top: 0;
+  inset-inline-end: 0;
+}
+
+.lightbox__nav--mobile {
+  display: none;
 }
 
 .lightbox__nav {
@@ -302,6 +383,20 @@ watch(
 .lightbox__figure {
   position: relative;
   margin: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.lightbox__figure::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  backdrop-filter: blur(12px);
+  background: rgba(251, 247, 240, 0.35);
 }
 
 .lightbox__figure:hover :deep(.gallery-share-footer),
@@ -322,6 +417,8 @@ watch(
 }
 
 .lightbox__image {
+  position: relative;
+  z-index: 1;
   display: block;
   width: 100%;
   height: auto;
@@ -362,29 +459,40 @@ watch(
 
   .lightbox__panel {
     --lightbox-max-height: min(90vh, calc(100dvh - 2 * var(--space-md)));
+    padding-top: calc(var(--space-lg) + 2.875rem + var(--space-sm));
   }
 
-  .lightbox__nav {
-    position: absolute;
-    top: 50%;
-    z-index: 10;
-    transform: translateY(-50%);
+  .lightbox__header {
+    display: grid;
+    grid-template-columns: 2.875rem 2.875rem 2.875rem;
+    justify-content: space-between;
+    align-items: center;
   }
 
-  .lightbox__nav:hover {
-    transform: translateY(-50%) scale(1.04);
+  .lightbox__header-spacer {
+    display: block;
   }
 
-  .lightbox__nav--prev {
-    inset-inline-start: 0.25rem;
+  .lightbox__close {
+    position: static;
   }
 
-  .lightbox__nav--next {
-    inset-inline-end: 0.25rem;
+  .lightbox__nav--desktop {
+    display: none;
+  }
+
+  .lightbox__nav--mobile {
+    display: inline-flex;
+  }
+
+  .lightbox__nav--mobile:disabled,
+  .lightbox__nav--mobile.lightbox__nav--placeholder {
+    visibility: hidden;
   }
 
   .lightbox__viewport {
     padding-inline: var(--space-lg);
+    max-height: calc(var(--lightbox-max-height) - 2 * var(--space-lg) - var(--space-md) - 2.75rem);
   }
 
   .lightbox__share-overlay {

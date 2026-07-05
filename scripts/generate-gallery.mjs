@@ -14,6 +14,7 @@ const heLocalePath = path.join(root, 'src', 'locales/he.json')
 const CATEGORIES = ['selected-work', 'full-book-spread']
 const IMAGE_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif', '.avif'])
 const THUMB_MAX_WIDTH = 800
+const DISPLAY_MAX_WIDTH = 1280
 
 function naturalCompare(a, b) {
   return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })
@@ -108,6 +109,11 @@ function portfolioThumb(category, filename) {
   return `/portfolio/${category}/thumbs/${encodeURIComponent(`${stem}.webp`)}`
 }
 
+function portfolioDisplay(category, filename) {
+  const stem = filename.replace(/\.[^.]+$/u, '')
+  return `/portfolio/${category}/display/${encodeURIComponent(`${stem}.webp`)}`
+}
+
 async function ensureThumb(category, filename, filePath) {
   const thumbDir = path.join(portfolioDir, category, 'thumbs')
   await mkdir(thumbDir, { recursive: true })
@@ -142,6 +148,40 @@ async function ensureThumb(category, filename, filePath) {
   }
 }
 
+async function ensureDisplay(category, filename, filePath) {
+  const displayDir = path.join(portfolioDir, category, 'display')
+  await mkdir(displayDir, { recursive: true })
+
+  const displayFilename = `${filename.replace(/\.[^.]+$/u, '')}.webp`
+  const displayPath = path.join(displayDir, displayFilename)
+  const metadata = await sharp(filePath).metadata()
+
+  if (!metadata.width || !metadata.height) {
+    throw new Error(`Could not read dimensions for ${filePath}`)
+  }
+
+  if (metadata.width <= DISPLAY_MAX_WIDTH) {
+    await sharp(filePath).rotate().webp({ quality: 84, effort: 4 }).toFile(displayPath)
+    return {
+      display: portfolioDisplay(category, filename),
+      displayWidth: metadata.width,
+      displayHeight: metadata.height,
+    }
+  }
+
+  const displayMeta = await sharp(filePath)
+    .rotate()
+    .resize({ width: DISPLAY_MAX_WIDTH, withoutEnlargement: true })
+    .webp({ quality: 84, effort: 4 })
+    .toFile(displayPath)
+
+  return {
+    display: portfolioDisplay(category, filename),
+    displayWidth: displayMeta.width,
+    displayHeight: displayMeta.height,
+  }
+}
+
 function escapeString(value) {
   return value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")
 }
@@ -159,7 +199,9 @@ async function scanCategory(category) {
     throw error
   }
 
-  const filenames = names.filter((name) => isImageFile(name) && name !== 'thumbs')
+  const filenames = names.filter(
+    (name) => isImageFile(name) && name !== 'thumbs' && name !== 'display',
+  )
   const entries = []
 
   for (const filename of filenames) {
@@ -172,6 +214,7 @@ async function scanCategory(category) {
     }
 
     const thumb = await ensureThumb(category, filename, filePath)
+    const display = await ensureDisplay(category, filename, filePath)
 
     entries.push({
       filename,
@@ -179,6 +222,7 @@ async function scanCategory(category) {
       height: dimensions.height,
       hue: await extractHue(filePath),
       ...thumb,
+      ...display,
     })
   }
 
@@ -206,9 +250,12 @@ async function scanCategory(category) {
       id,
       category,
       image: portfolioImage(category, entry.filename),
+      display: entry.display,
       thumb: entry.thumb,
       width: entry.width,
       height: entry.height,
+      displayWidth: entry.displayWidth,
+      displayHeight: entry.displayHeight,
       thumbWidth: entry.thumbWidth,
       thumbHeight: entry.thumbHeight,
       filename: entry.filename,
@@ -222,9 +269,12 @@ function renderGalleryTs(items) {
       `    id: '${escapeString(item.id)}'`,
       `    category: '${item.category}'`,
       `    image: '${escapeString(item.image)}'`,
+      `    display: '${escapeString(item.display)}'`,
       `    thumb: '${escapeString(item.thumb)}'`,
       `    width: ${item.width}`,
       `    height: ${item.height}`,
+      `    displayWidth: ${item.displayWidth}`,
+      `    displayHeight: ${item.displayHeight}`,
       `    thumbWidth: ${item.thumbWidth}`,
       `    thumbHeight: ${item.thumbHeight}`,
     ]
