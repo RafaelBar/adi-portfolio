@@ -29,6 +29,10 @@ jobs:
           count=$(find dist/he/i dist/en/i -name '*.html' 2>/dev/null | wc -l | tr -d ' ')
           echo "Gallery share pages: $count"
           test "$count" -gt 0
+          sample=$(find dist/he/i -maxdepth 1 -name '*.html' | head -1)
+          grep -q 'og:image.*portfolio' "$sample"
+          grep -q 'primary-image.png' "$sample" && exit 1 || true
+          echo "Sample share page OK: $sample"
 
       - name: Upload dist to FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5

@@ -28,7 +28,7 @@ async function loadGalleryItems() {
   const source = await readFile(filePath, 'utf8')
   const items = []
   const blockRe =
-    /id:\s*'([^']+)',\s*category:\s*'([^']+)',\s*image:\s*'([^']+)',\s*display:\s*'([^']+)',\s*thumb:\s*'([^']+)',\s*width:\s*(\d+),\s*height:\s*(\d+)/g
+    /id:\s*'([^']+)',\s*category:\s*'([^']+)',\s*image:\s*'([^']+)',\s*display:\s*'([^']+)',\s*thumb:\s*'([^']+)',\s*width:\s*(\d+),\s*height:\s*(\d+),\s*displayWidth:\s*(\d+),\s*displayHeight:\s*(\d+)/g
 
   for (const match of source.matchAll(blockRe)) {
     items.push({
@@ -38,6 +38,8 @@ async function loadGalleryItems() {
       display: match[4],
       width: Number(match[6]),
       height: Number(match[7]),
+      displayWidth: Number(match[8]),
+      displayHeight: Number(match[9]),
     })
   }
 
@@ -75,8 +77,10 @@ function escapeHtml(value) {
 function buildSharePage({ locale, item, caption, meta }) {
   const title = `${caption} | ${meta.siteTitle}`
   const shareUrl = `${SITE_URL}/${locale}/i/${item.id}.html`
+  // JPEG for broad OG crawler support (WhatsApp, iMessage, Facebook).
   const imageUrl = `${SITE_URL}${item.image}`
   const appUrl = `/${locale}#gallery/${item.id}`
+  const viewLabel = locale === 'he' ? 'צפייה בגלריה' : 'View in gallery'
 
   return `<!doctype html>
 <html lang="${locale}" dir="${meta.dir}">
@@ -93,6 +97,8 @@ function buildSharePage({ locale, item, caption, meta }) {
     <meta property="og:locale" content="${meta.ogLocale}" />
     <meta property="og:locale:alternate" content="${meta.altLocale}" />
     <meta property="og:image" content="${imageUrl}" />
+    <meta property="og:image:secure_url" content="${imageUrl}" />
+    <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:width" content="${item.width}" />
     <meta property="og:image:height" content="${item.height}" />
     <meta property="og:image:alt" content="${escapeHtml(caption)}" />
@@ -100,11 +106,19 @@ function buildSharePage({ locale, item, caption, meta }) {
     <meta name="twitter:title" content="${escapeHtml(caption)}" />
     <meta name="twitter:description" content="${escapeHtml(caption)}" />
     <meta name="twitter:image" content="${imageUrl}" />
-    <meta http-equiv="refresh" content="0;url=${appUrl}" />
-    <script>location.replace(${JSON.stringify(appUrl)})</script>
+    <style>
+      body { margin: 0; font-family: system-ui, sans-serif; background: #fbf7f0; color: #1a1a1a; }
+      main { max-width: 42rem; margin: 0 auto; padding: 1.5rem; text-align: center; }
+      img { max-width: 100%; height: auto; border-radius: 0.5rem; }
+      a { display: inline-block; margin-top: 1rem; color: #1a1a1a; }
+    </style>
   </head>
   <body>
-    <p><a href="${appUrl}">${escapeHtml(caption)}</a></p>
+    <main>
+      <h1>${escapeHtml(caption)}</h1>
+      <img src="${imageUrl}" alt="${escapeHtml(caption)}" width="${item.displayWidth}" height="${item.displayHeight}" loading="eager" />
+      <p><a href="${appUrl}">${escapeHtml(viewLabel)}</a></p>
+    </main>
   </body>
 </html>
 `
