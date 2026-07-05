@@ -27,6 +27,10 @@ function applySeo(html, { lang, dir, title, imageAlt, url, ogLocale, altLocale }
     .replace(/ dir="[^"]*"/, ` dir="${dir}"`)
     .replace(/<title>[^<]*<\/title>/, `<title>${title}</title>`)
     .replace(
+      /<link rel="canonical" href="[^"]*"\s*\/?>/,
+      `<link rel="canonical" href="${url}" />`,
+    )
+    .replace(
       /<meta property="og:title" content="[^"]*"\s*\/?>/,
       `<meta property="og:title" content="${title}" />`,
     )

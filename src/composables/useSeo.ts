@@ -14,6 +14,16 @@ function setMeta(attr: 'name' | 'property', key: string, content: string) {
   el.setAttribute('content', content)
 }
 
+function setCanonical(url: string) {
+  let el = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null
+  if (!el) {
+    el = document.createElement('link')
+    el.rel = 'canonical'
+    document.head.appendChild(el)
+  }
+  el.href = url
+}
+
 export function useSeo() {
   const { t, locale } = useI18n()
   const route = useRoute()
@@ -28,13 +38,16 @@ export function useSeo() {
       code === 'he' ? 'עדי בדש — מאיירת ספרי ילדים' : "Adi Badash — children's book illustrator"
 
     document.title = title
+    setCanonical(pageUrl)
 
     setMeta('property', 'og:title', title)
+    setMeta('property', 'og:description', '')
     setMeta('property', 'og:url', pageUrl)
     setMeta('property', 'og:locale', ogLocaleFor(code))
     setMeta('property', 'og:locale:alternate', altLocale)
     setMeta('property', 'og:image:alt', imageAlt)
     setMeta('name', 'twitter:title', title)
+    setMeta('name', 'twitter:description', '')
     setMeta('name', 'twitter:image', absoluteUrl(OG_IMAGE_PATH))
   })
 }

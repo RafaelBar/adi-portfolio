@@ -1,4 +1,8 @@
 {
+  "redirects": [
+    { "source": "/he/", "destination": "/he", "statusCode": 308 },
+    { "source": "/en/", "destination": "/en", "statusCode": 308 }
+  ],
   "headers": [
     {
       "source": "/favicon.png",
