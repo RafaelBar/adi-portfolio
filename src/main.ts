@@ -14,6 +14,10 @@ function getInitialLocale() {
 if (redirectSharePathToHash()) {
   // Navigation in progress — skip mounting until the hash URL loads.
 } else {
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual'
+  }
+
   const initialLocale = getInitialLocale()
   i18n.global.locale.value = initialLocale
   applyDocumentLocale(initialLocale)
