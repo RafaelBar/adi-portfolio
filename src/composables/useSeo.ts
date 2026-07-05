@@ -1,19 +1,44 @@
 import { watchEffect } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+import { absoluteUrl, ogLocaleFor, OG_IMAGE_PATH } from '@/data/seo'
+import type { LocaleCode } from '@/models/types'
+
+function setMeta(attr: 'name' | 'property', key: string, content: string) {
+  let el = document.querySelector(`meta[${attr}="${key}"]`)
+  if (!el) {
+    el = document.createElement('meta')
+    el.setAttribute(attr, key)
+    document.head.appendChild(el)
+  }
+  el.setAttribute('content', content)
+}
 
 export function useSeo() {
   const { t, locale } = useI18n()
+  const route = useRoute()
 
   watchEffect(() => {
     locale.value
-    document.title = t('meta.title')
+    const code = locale.value as LocaleCode
+    const title = t('meta.title')
+    const description = t('meta.description')
+    const pageUrl = absoluteUrl(route.path)
+    const altLocale = ogLocaleFor(code === 'he' ? 'en' : 'he')
+    const imageAlt =
+      code === 'he' ? 'עדי בדש — מאיירת ספרי ילדים' : "Adi Badash — children's book illustrator"
 
-    let description = document.querySelector('meta[name="description"]')
-    if (!description) {
-      description = document.createElement('meta')
-      description.setAttribute('name', 'description')
-      document.head.appendChild(description)
-    }
-    description.setAttribute('content', t('meta.description'))
+    document.title = title
+
+    setMeta('name', 'description', description)
+    setMeta('property', 'og:title', title)
+    setMeta('property', 'og:description', description)
+    setMeta('property', 'og:url', pageUrl)
+    setMeta('property', 'og:locale', ogLocaleFor(code))
+    setMeta('property', 'og:locale:alternate', altLocale)
+    setMeta('property', 'og:image:alt', imageAlt)
+    setMeta('name', 'twitter:title', title)
+    setMeta('name', 'twitter:description', description)
+    setMeta('name', 'twitter:image', absoluteUrl(OG_IMAGE_PATH))
   })
 }
