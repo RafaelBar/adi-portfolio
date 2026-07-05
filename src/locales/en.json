@@ -106,6 +106,10 @@
       "full-book-spread": "Full book spread"
     },
     "close": "Close",
+    "prev": "Previous illustration",
+    "next": "Next illustration",
+    "share": "Share illustration",
+    "shareCopied": "Link copied",
     "showMore": "Show more"
   },
   "contact": {

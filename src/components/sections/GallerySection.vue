@@ -1,24 +1,31 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { galleryItems, GALLERY_CATEGORIES } from '@/data/gallery'
-import type { GalleryCategory, GalleryItem } from '@/models/types'
+import { getGalleryCaption } from '@/data/gallery-captions'
+import { galleryImageHash, parseGalleryImageHash } from '@/utils/gallery-share'
+import type { GalleryCategory, GalleryItem, LocaleCode } from '@/models/types'
 import SectionHeading from '@/components/ui/SectionHeading.vue'
 import ScrollReveal from '@/components/ui/ScrollReveal.vue'
 import OptimizedImage from '@/components/ui/OptimizedImage.vue'
 import Lightbox from '@/components/ui/Lightbox.vue'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const route = useRoute()
+const router = useRouter()
 
 type FilterValue = GalleryCategory
 
 const GALLERY_INITIAL_COUNT = 10
 
 const activeFilter = ref<FilterValue>('selected-work')
-const selectedItem = ref<GalleryItem | null>(null)
+const selectedIndex = ref<number | null>(null)
 const visibleCount = ref(GALLERY_INITIAL_COUNT)
+
+function itemCaption(item: GalleryItem) {
+  return getGalleryCaption(item.id, locale.value as LocaleCode)
+}
 
 const filters: { value: FilterValue; labelKey: string }[] = GALLERY_CATEGORIES.map((category) => ({
   value: category,
@@ -57,6 +64,10 @@ const hasMoreItems = computed(() => filteredItems.value.length > visibleCount.va
 
 function setFilter(value: FilterValue) {
   activeFilter.value = value
+  if (selectedIndex.value !== null) {
+    selectedIndex.value = null
+    syncGalleryHash(null)
+  }
 }
 
 function showMore() {
@@ -67,11 +78,55 @@ function showMore() {
 }
 
 function openLightbox(item: GalleryItem) {
-  selectedItem.value = item
+  const index = filteredItems.value.findIndex((entry) => entry.id === item.id)
+  if (index >= 0) {
+    selectedIndex.value = index
+    syncGalleryHash(item.id)
+  }
 }
 
 function closeLightbox() {
-  selectedItem.value = null
+  selectedIndex.value = null
+  syncGalleryHash(null)
+}
+
+function navigateLightbox(index: number) {
+  selectedIndex.value = index
+  const item = filteredItems.value[index]
+  if (item) syncGalleryHash(item.id)
+}
+
+function syncGalleryHash(imageId: string | null) {
+  const nextHash = imageId ? galleryImageHash(imageId) : `#gallery-${activeFilter.value}`
+  if (route.hash === nextHash) return
+  router.replace({ hash: nextHash })
+}
+
+function findGalleryItem(imageId: string): GalleryItem | undefined {
+  return galleryItems.find((item) => item.id === imageId)
+}
+
+function ensureItemVisible(item: GalleryItem) {
+  const itemsInCategory = galleryItems.filter((entry) => entry.category === item.category)
+  const index = itemsInCategory.findIndex((entry) => entry.id === item.id)
+  if (index >= 0 && index >= visibleCount.value) {
+    visibleCount.value = index + 1
+  }
+}
+
+async function openLightboxFromHash(hash: string) {
+  const imageId = parseGalleryImageHash(hash)
+  if (!imageId) return
+
+  const item = findGalleryItem(imageId)
+  if (!item) return
+
+  activeFilter.value = item.category
+  ensureItemVisible(item)
+  await nextTick()
+
+  const index = filteredItems.value.findIndex((entry) => entry.id === item.id)
+  if (index >= 0) selectedIndex.value = index
 }
 
 function parseHashFilter(hash: string): FilterValue | null {
@@ -80,24 +135,38 @@ function parseHashFilter(hash: string): FilterValue | null {
   return null
 }
 
-function applyHashFilter() {
-  const hash = window.location.hash || route.hash
+async function applyGalleryHash() {
+  const hash = route.hash || window.location.hash
+
+  const imageId = parseGalleryImageHash(hash)
+  if (imageId) {
+    await openLightboxFromHash(hash)
+    return
+  }
+
+  selectedIndex.value = null
   const filter = parseHashFilter(hash)
   if (filter) activeFilter.value = filter
 }
 
+function onHashChange() {
+  void applyGalleryHash()
+}
+
 onMounted(() => {
-  applyHashFilter()
-  window.addEventListener('hashchange', applyHashFilter)
+  void applyGalleryHash()
+  window.addEventListener('hashchange', onHashChange)
 })
 
 onUnmounted(() => {
-  window.removeEventListener('hashchange', applyHashFilter)
+  window.removeEventListener('hashchange', onHashChange)
 })
 
 watch(
   () => route.hash,
-  () => applyHashFilter(),
+  () => {
+    void applyGalleryHash()
+  },
 )
 
 watch(activeFilter, () => {
@@ -137,7 +206,7 @@ watch(activeFilter, () => {
           <button type="button" class="gallery__card" @click="openLightbox(item)">
             <OptimizedImage
               :src="item.thumb"
-              alt=""
+              :alt="itemCaption(item)"
               :width="item.thumbWidth"
               :height="item.thumbHeight"
               fit="cover"
@@ -153,7 +222,7 @@ watch(activeFilter, () => {
             <button type="button" class="gallery__card" @click="openLightbox(item)">
               <OptimizedImage
                 :src="item.thumb"
-                alt=""
+                :alt="itemCaption(item)"
                 :width="item.thumbWidth"
                 :height="item.thumbHeight"
                 fit="cover"
@@ -168,7 +237,7 @@ watch(activeFilter, () => {
             <button type="button" class="gallery__card" @click="openLightbox(item)">
               <OptimizedImage
                 :src="item.thumb"
-                alt=""
+                :alt="itemCaption(item)"
                 :width="item.thumbWidth"
                 :height="item.thumbHeight"
                 fit="cover"
@@ -186,7 +255,13 @@ watch(activeFilter, () => {
       </div>
     </div>
 
-    <Lightbox v-if="selectedItem" :item="selectedItem" @close="closeLightbox" />
+    <Lightbox
+      v-if="selectedIndex !== null"
+      :items="filteredItems"
+      :index="selectedIndex"
+      @close="closeLightbox"
+      @navigate="navigateLightbox"
+    />
   </section>
 </template>
 

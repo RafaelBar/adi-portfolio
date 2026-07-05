@@ -7,7 +7,7 @@
     "images:optimize": "node scripts/optimize-images.mjs",
     "gallery:sync": "node scripts/generate-gallery.mjs",
     "dev": "npm run images:optimize && npm run gallery:sync && vite",
-    "build": "npm run images:optimize && npm run gallery:sync && vue-tsc -b && vite build && node scripts/generate-seo-html.mjs",
+    "build": "npm run images:optimize && npm run gallery:sync && vue-tsc -b && vite build && node scripts/generate-seo-html.mjs && node scripts/generate-share-pages.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

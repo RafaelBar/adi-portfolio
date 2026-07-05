@@ -23,12 +23,20 @@ const router = createRouter({
       props: (route) => ({ locale: route.params.locale }),
     },
     {
+      path: '/:locale(he|en)/i/:imageId',
+      redirect: (to) => ({
+        path: `/${String(to.params.locale)}`,
+        hash: `#gallery/${String(to.params.imageId)}`,
+      }),
+    },
+    {
       path: '/:pathMatch(.*)*',
       redirect: () => `/${getPreferredLocale()}`,
     },
   ],
   scrollBehavior(to) {
-    if (to.hash.startsWith('#gallery')) {
+    const imageId = to.hash.match(/^#gallery\/([^/?#]+)$/)?.[1]
+    if (imageId || to.hash.startsWith('#gallery')) {
       return { el: '#gallery', behavior: 'smooth', top: 80 }
     }
     if (to.hash) {
