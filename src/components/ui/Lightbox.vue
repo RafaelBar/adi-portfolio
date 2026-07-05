@@ -103,25 +103,47 @@ watch(
 
         <div class="lightbox__panel">
           <div class="lightbox__header">
-            <button
-              v-if="hasPrev"
-              type="button"
-              class="lightbox__control lightbox__nav lightbox__nav--prev lightbox__nav--mobile"
-              :aria-label="t('gallery.prev')"
-              @click="goPrev"
-            >
-              <svg class="lightbox__control-icon" viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="M9 6l6 6-6 6"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </button>
-            <span v-else class="lightbox__header-spacer" aria-hidden="true" />
+            <div class="lightbox__header-nav">
+              <button
+                v-if="hasPrev"
+                type="button"
+                class="lightbox__control lightbox__nav lightbox__nav--prev lightbox__nav--mobile"
+                :aria-label="t('gallery.prev')"
+                @click="goPrev"
+              >
+                <svg class="lightbox__control-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M9 6l6 6-6 6"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
+              <span v-else class="lightbox__header-spacer" aria-hidden="true" />
+
+              <button
+                v-if="hasNext"
+                type="button"
+                class="lightbox__control lightbox__nav lightbox__nav--next lightbox__nav--mobile"
+                :aria-label="t('gallery.next')"
+                @click="goNext"
+              >
+                <svg class="lightbox__control-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M9 6l6 6-6 6"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
+              <span v-else class="lightbox__header-spacer" aria-hidden="true" />
+            </div>
 
             <button
               type="button"
@@ -140,26 +162,6 @@ watch(
                 />
               </svg>
             </button>
-
-            <button
-              v-if="hasNext"
-              type="button"
-              class="lightbox__control lightbox__nav lightbox__nav--next lightbox__nav--mobile"
-              :aria-label="t('gallery.next')"
-              @click="goNext"
-            >
-              <svg class="lightbox__control-icon" viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="M9 6l6 6-6 6"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </button>
-            <span v-else class="lightbox__header-spacer" aria-hidden="true" />
           </div>
 
           <div class="lightbox__body">
@@ -320,11 +322,20 @@ watch(
   top: var(--space-md);
   inset-inline: var(--space-md);
   z-index: 5;
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   pointer-events: none;
 }
 
 .lightbox__header .lightbox__control {
+  pointer-events: auto;
+}
+
+.lightbox__header-nav {
+  display: none;
+  align-items: center;
+  gap: var(--space-sm);
   pointer-events: auto;
 }
 
@@ -336,9 +347,7 @@ watch(
 }
 
 .lightbox__close {
-  position: absolute;
-  top: 0;
-  inset-inline-end: 0;
+  position: static;
 }
 
 .lightbox__nav--mobile {
@@ -463,18 +472,15 @@ watch(
   }
 
   .lightbox__header {
-    display: grid;
-    grid-template-columns: 2.875rem 2.875rem 2.875rem;
     justify-content: space-between;
-    align-items: center;
+  }
+
+  .lightbox__header-nav {
+    display: flex;
   }
 
   .lightbox__header-spacer {
     display: block;
-  }
-
-  .lightbox__close {
-    position: static;
   }
 
   .lightbox__nav--desktop {
