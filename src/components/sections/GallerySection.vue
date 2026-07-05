@@ -3,7 +3,7 @@ import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { galleryItems, GALLERY_CATEGORIES } from '@/data/gallery'
-import { galleryImageHash, parseGalleryImageHash } from '@/utils/gallery-share'
+import { galleryImageHash, parseGalleryImageHash, parseGallerySharePath } from '@/utils/gallery-share'
 import type { GalleryCategory, GalleryItem } from '@/models/types'
 import SectionHeading from '@/components/ui/SectionHeading.vue'
 import ScrollReveal from '@/components/ui/ScrollReveal.vue'
@@ -92,9 +92,10 @@ function navigateLightbox(index: number) {
 }
 
 function syncGalleryHash(imageId: string | null) {
+  const locale = typeof route.params.locale === 'string' ? route.params.locale : 'he'
   const nextHash = imageId ? galleryImageHash(imageId) : `#gallery-${activeFilter.value}`
-  if (route.hash === nextHash) return
-  router.replace({ hash: nextHash })
+  if (route.path === `/${locale}` && route.hash === nextHash) return
+  router.replace({ path: `/${locale}`, hash: nextHash })
 }
 
 function findGalleryItem(imageId: string): GalleryItem | undefined {
@@ -109,19 +110,25 @@ function ensureItemVisible(item: GalleryItem) {
   }
 }
 
-async function openLightboxFromHash(hash: string) {
-  const imageId = parseGalleryImageHash(hash)
-  if (!imageId) return
-
+async function openLightboxFromImageId(imageId: string) {
   const item = findGalleryItem(imageId)
   if (!item) return
 
   activeFilter.value = item.category
   ensureItemVisible(item)
   await nextTick()
+  await nextTick()
 
   const index = filteredItems.value.findIndex((entry) => entry.id === item.id)
   if (index >= 0) selectedIndex.value = index
+}
+
+function resolveDeepLinkImageId(): string | null {
+  const fromHash = parseGalleryImageHash(route.hash || window.location.hash)
+  if (fromHash) return fromHash
+
+  const fromPath = parseGallerySharePath(route.path || window.location.pathname)
+  return fromPath?.imageId ?? null
 }
 
 function parseHashFilter(hash: string): FilterValue | null {
@@ -130,26 +137,34 @@ function parseHashFilter(hash: string): FilterValue | null {
   return null
 }
 
-async function applyGalleryHash() {
-  const hash = route.hash || window.location.hash
-
-  const imageId = parseGalleryImageHash(hash)
+async function applyGalleryDeepLink() {
+  const imageId = resolveDeepLinkImageId()
   if (imageId) {
-    await openLightboxFromHash(hash)
+    const locale =
+      typeof route.params.locale === 'string'
+        ? route.params.locale
+        : parseGallerySharePath(window.location.pathname)?.locale ?? 'he'
+
+    await openLightboxFromImageId(imageId)
+
+    const nextHash = galleryImageHash(imageId)
+    if (route.path !== `/${locale}` || route.hash !== nextHash) {
+      router.replace({ path: `/${locale}`, hash: nextHash })
+    }
     return
   }
 
   selectedIndex.value = null
-  const filter = parseHashFilter(hash)
+  const filter = parseHashFilter(route.hash || window.location.hash)
   if (filter) activeFilter.value = filter
 }
 
 function onHashChange() {
-  void applyGalleryHash()
+  void applyGalleryDeepLink()
 }
 
 onMounted(() => {
-  void applyGalleryHash()
+  void router.isReady().then(() => applyGalleryDeepLink())
   window.addEventListener('hashchange', onHashChange)
 })
 
@@ -160,7 +175,14 @@ onUnmounted(() => {
 watch(
   () => route.hash,
   () => {
-    void applyGalleryHash()
+    void applyGalleryDeepLink()
+  },
+)
+
+watch(
+  () => route.path,
+  () => {
+    void applyGalleryDeepLink()
   },
 )
 
