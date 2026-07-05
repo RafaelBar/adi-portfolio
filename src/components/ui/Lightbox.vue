@@ -245,8 +245,6 @@ watch(
 
 .lightbox__close,
 .lightbox__nav {
-  width: 2.875rem;
-  height: 2.875rem;
   background: rgba(255, 255, 255, 0.96);
   border: 1px solid rgba(61, 58, 54, 0.14);
   color: var(--color-ink-soft);
@@ -256,10 +254,24 @@ watch(
   backdrop-filter: blur(6px);
 }
 
-.lightbox__close .lightbox__control-icon,
+.lightbox__nav {
+  width: 2.875rem;
+  height: 2.875rem;
+}
+
+.lightbox__close {
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
 .lightbox__nav .lightbox__control-icon {
   width: 1.2rem;
   height: 1.2rem;
+}
+
+.lightbox__close .lightbox__control-icon {
+  width: 0.9375rem;
+  height: 0.9375rem;
 }
 
 .lightbox__close:hover,
