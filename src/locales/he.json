@@ -106,6 +106,10 @@
       "full-book-spread": "כפולה מלאה מספר"
     },
     "close": "סגור",
+    "prev": "האיור הקודם",
+    "next": "האיור הבא",
+    "share": "שתף איור",
+    "shareCopied": "הקישור הועתק",
     "showMore": "הצג עוד"
   },
   "contact": {

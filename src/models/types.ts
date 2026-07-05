@@ -6,9 +6,12 @@ export interface GalleryItem {
   id: string
   category: GalleryCategory
   image: string
+  display: string
   thumb: string
   width: number
   height: number
+  displayWidth: number
+  displayHeight: number
   thumbWidth: number
   thumbHeight: number
 }

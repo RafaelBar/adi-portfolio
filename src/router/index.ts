@@ -23,18 +23,54 @@ const router = createRouter({
       props: (route) => ({ locale: route.params.locale }),
     },
     {
+      path: '/:locale(he|en)/i/:imageId',
+      redirect: (to) => {
+        const imageId = String(to.params.imageId).replace(/\.html$/i, '')
+        return {
+          path: `/${String(to.params.locale)}`,
+          hash: `#gallery/${imageId}`,
+        }
+      },
+    },
+    {
       path: '/:pathMatch(.*)*',
       redirect: () => `/${getPreferredLocale()}`,
     },
   ],
-  scrollBehavior(to) {
-    if (to.hash.startsWith('#gallery')) {
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    }
+
+    const imageHash = to.hash.match(/^#gallery\/([^/?#]+)$/)
+    if (imageHash) {
+      const samePage = from.path === to.path && from.name === to.name
+      if (samePage) return false
+      return { top: 0, left: 0 }
+    }
+
+    if (to.hash === '#gallery-selected-work' || to.hash === '#gallery-full-book-spread') {
+      const closingLightbox =
+        from.hash.match(/^#gallery\/([^/?#]+)$/) &&
+        from.path === to.path &&
+        from.name === to.name
+      if (closingLightbox) return false
       return { el: '#gallery', behavior: 'smooth', top: 80 }
     }
+
+    if (!to.hash) {
+      const closingLightbox =
+        from.hash.match(/^#gallery\/([^/?#]+)$/) &&
+        from.path === to.path &&
+        from.name === to.name
+      if (closingLightbox) return false
+    }
+
     if (to.hash) {
       return { el: to.hash, behavior: 'smooth', top: 80 }
     }
-    return { top: 0 }
+
+    return { top: 0, left: 0 }
   },
 })
 
