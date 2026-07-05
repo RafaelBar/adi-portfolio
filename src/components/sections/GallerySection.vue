@@ -3,15 +3,14 @@ import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { galleryItems, GALLERY_CATEGORIES } from '@/data/gallery'
-import { getGalleryCaption } from '@/data/gallery-captions'
 import { galleryImageHash, parseGalleryImageHash } from '@/utils/gallery-share'
-import type { GalleryCategory, GalleryItem, LocaleCode } from '@/models/types'
+import type { GalleryCategory, GalleryItem } from '@/models/types'
 import SectionHeading from '@/components/ui/SectionHeading.vue'
 import ScrollReveal from '@/components/ui/ScrollReveal.vue'
-import OptimizedImage from '@/components/ui/OptimizedImage.vue'
+import GalleryCard from '@/components/ui/GalleryCard.vue'
 import Lightbox from '@/components/ui/Lightbox.vue'
 
-const { t, locale } = useI18n()
+const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 
@@ -22,10 +21,6 @@ const GALLERY_INITIAL_COUNT = 10
 const activeFilter = ref<FilterValue>('selected-work')
 const selectedIndex = ref<number | null>(null)
 const visibleCount = ref(GALLERY_INITIAL_COUNT)
-
-function itemCaption(item: GalleryItem) {
-  return getGalleryCaption(item.id, locale.value as LocaleCode)
-}
 
 const filters: { value: FilterValue; labelKey: string }[] = GALLERY_CATEGORIES.map((category) => ({
   value: category,
@@ -203,47 +198,20 @@ watch(activeFilter, () => {
 
       <ul class="gallery__list gallery__list--mobile">
         <li v-for="item in visibleItems" :key="item.id" class="gallery__list-item">
-          <button type="button" class="gallery__card" @click="openLightbox(item)">
-            <OptimizedImage
-              :src="item.thumb"
-              :alt="itemCaption(item)"
-              :width="item.thumbWidth"
-              :height="item.thumbHeight"
-              fit="cover"
-              img-class="gallery__image"
-            />
-          </button>
+          <GalleryCard :item="item" @open="openLightbox(item)" />
         </li>
       </ul>
 
       <div class="gallery__columns">
         <ul class="gallery__list">
           <li v-for="item in balancedColumns.left" :key="item.id" class="gallery__list-item">
-            <button type="button" class="gallery__card" @click="openLightbox(item)">
-              <OptimizedImage
-                :src="item.thumb"
-                :alt="itemCaption(item)"
-                :width="item.thumbWidth"
-                :height="item.thumbHeight"
-                fit="cover"
-                img-class="gallery__image"
-              />
-            </button>
+            <GalleryCard :item="item" @open="openLightbox(item)" />
           </li>
         </ul>
 
         <ul class="gallery__list">
           <li v-for="item in balancedColumns.right" :key="item.id" class="gallery__list-item">
-            <button type="button" class="gallery__card" @click="openLightbox(item)">
-              <OptimizedImage
-                :src="item.thumb"
-                :alt="itemCaption(item)"
-                :width="item.thumbWidth"
-                :height="item.thumbHeight"
-                fit="cover"
-                img-class="gallery__image"
-              />
-            </button>
+            <GalleryCard :item="item" @open="openLightbox(item)" />
           </li>
         </ul>
       </div>
@@ -316,35 +284,6 @@ watch(activeFilter, () => {
 
 .gallery__list-item {
   margin: 0;
-}
-
-.gallery__card {
-  display: block;
-  width: 100%;
-  padding: 0;
-  border: none;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  box-shadow: var(--shadow-soft);
-  cursor: pointer;
-  transition:
-    transform var(--transition),
-    box-shadow var(--transition);
-}
-
-.gallery__card :deep(.optimized-image) {
-  width: 100%;
-}
-
-.gallery__card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-card);
-}
-
-.gallery__image {
-  display: block;
-  width: 100%;
-  height: 100%;
 }
 
 .gallery__more-wrap {

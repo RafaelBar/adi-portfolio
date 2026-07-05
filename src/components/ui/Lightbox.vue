@@ -2,7 +2,7 @@
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { getGalleryCaption } from '@/data/gallery-captions'
-import { buildGalleryShareUrl, shareGalleryImage } from '@/utils/gallery-share'
+import GalleryShareFooter from '@/components/ui/GalleryShareFooter.vue'
 import type { GalleryItem } from '@/models/types'
 import type { LocaleCode } from '@/models/types'
 
@@ -18,8 +18,6 @@ const emit = defineEmits<{
 
 const { t, locale } = useI18n()
 const imageViewport = ref<HTMLElement | null>(null)
-const shareFeedback = ref<'idle' | 'copied'>('idle')
-let shareFeedbackTimer: ReturnType<typeof setTimeout> | undefined
 
 const item = computed(() => props.items[props.index] ?? null)
 const caption = computed(() =>
@@ -34,24 +32,6 @@ function goPrev() {
 
 function goNext() {
   if (hasNext.value) emit('navigate', props.index + 1)
-}
-
-async function shareCurrent() {
-  if (!item.value) return
-
-  const url = buildGalleryShareUrl(locale.value as LocaleCode, item.value.id)
-  try {
-    const result = await shareGalleryImage({ url, title: caption.value })
-    if (result === 'copied') {
-      shareFeedback.value = 'copied'
-      clearTimeout(shareFeedbackTimer)
-      shareFeedbackTimer = setTimeout(() => {
-        shareFeedback.value = 'idle'
-      }, 2000)
-    }
-  } catch {
-    // User dismissed the native share sheet.
-  }
 }
 
 function onKeydown(event: KeyboardEvent) {
@@ -80,14 +60,12 @@ onMounted(() => {
 onUnmounted(() => {
   document.body.style.overflow = ''
   window.removeEventListener('keydown', onKeydown)
-  clearTimeout(shareFeedbackTimer)
 })
 
 watch(
   () => props.index,
   () => {
     imageViewport.value?.scrollTo({ top: 0 })
-    shareFeedback.value = 'idle'
   },
 )
 </script>
@@ -106,11 +84,11 @@ watch(
         <button
           v-if="hasPrev"
           type="button"
-          class="lightbox__nav lightbox__nav--prev"
+          class="lightbox__control lightbox__nav lightbox__nav--prev"
           :aria-label="t('gallery.prev')"
           @click="goPrev"
         >
-          <svg class="lightbox__nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <svg class="lightbox__control-icon" viewBox="0 0 24 24" aria-hidden="true">
             <path
               d="M9 6l6 6-6 6"
               fill="none"
@@ -123,55 +101,49 @@ watch(
         </button>
 
         <div class="lightbox__panel">
-          <button type="button" class="lightbox__close" :aria-label="t('gallery.close')" @click="emit('close')">
-            <svg class="lightbox__close-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <button
+            type="button"
+            class="lightbox__control lightbox__close"
+            :aria-label="t('gallery.close')"
+            @click="emit('close')"
+          >
+            <svg class="lightbox__control-icon" viewBox="0 0 24 24" aria-hidden="true">
               <path
-                d="M7 7l10 10M17 7L7 17"
+                d="M8 8l8 8M16 8l-8 8"
                 fill="none"
                 stroke="currentColor"
                 stroke-width="2"
                 stroke-linecap="round"
+                stroke-linejoin="round"
               />
             </svg>
           </button>
 
           <div class="lightbox__body">
             <div ref="imageViewport" class="lightbox__viewport">
-              <img :src="item.image" :alt="caption" class="lightbox__image" />
+              <figure class="lightbox__figure">
+                <img :src="item.image" :alt="caption" class="lightbox__image" />
+                <GalleryShareFooter
+                  :image-id="item.id"
+                  :title="caption"
+                />
+              </figure>
             </div>
           </div>
 
           <p class="lightbox__caption">
             <span class="lightbox__caption-text">{{ caption }}</span>
-            <button
-              type="button"
-              class="lightbox__share"
-              :aria-label="t('gallery.share')"
-              @click="shareCurrent"
-            >
-              <svg class="lightbox__share-icon" viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98M18 4a2 2 0 100 4 2 2 0 000-4zM6 12a2 2 0 100 4 2 2 0 000-4zM18 16a2 2 0 100 4 2 2 0 000-4z"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.75"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              <span>{{ shareFeedback === 'copied' ? t('gallery.shareCopied') : t('gallery.share') }}</span>
-            </button>
           </p>
         </div>
 
         <button
           v-if="hasNext"
           type="button"
-          class="lightbox__nav lightbox__nav--next"
+          class="lightbox__control lightbox__nav lightbox__nav--next"
           :aria-label="t('gallery.next')"
           @click="goNext"
         >
-          <svg class="lightbox__nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <svg class="lightbox__control-icon" viewBox="0 0 24 24" aria-hidden="true">
             <path
               d="M9 6l6 6-6 6"
               fill="none"
@@ -201,12 +173,85 @@ watch(
 }
 
 .lightbox__frame {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: clamp(0.75rem, 2vw, 1.25rem);
   width: min(100%, calc(52rem + 7rem));
   max-width: 100%;
+  pointer-events: none;
+}
+
+.lightbox__panel,
+.lightbox__control {
+  pointer-events: auto;
+}
+
+.lightbox__control {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  color: #fff;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transition:
+    background var(--transition),
+    border-color var(--transition),
+    transform var(--transition);
+}
+
+.lightbox__control:hover {
+  background: rgba(255, 255, 255, 0.24);
+  border-color: rgba(255, 255, 255, 0.42);
+  transform: scale(1.06);
+}
+
+.lightbox__control-icon {
+  width: 1.125rem;
+  height: 1.125rem;
+  display: block;
+}
+
+.lightbox__close {
+  position: absolute;
+  top: var(--space-md);
+  inset-inline-end: var(--space-md);
+  z-index: 5;
+  width: 2.875rem;
+  height: 2.875rem;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(61, 58, 54, 0.14);
+  color: var(--color-ink-soft);
+  box-shadow:
+    0 2px 8px rgba(61, 58, 54, 0.08),
+    0 8px 24px rgba(61, 58, 54, 0.1);
+  backdrop-filter: blur(6px);
+}
+
+.lightbox__close .lightbox__control-icon {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.lightbox__close:hover {
+  background: #fff;
+  border-color: rgba(61, 58, 54, 0.2);
+  color: var(--color-ink);
+  transform: scale(1.04);
+  box-shadow:
+    0 4px 12px rgba(61, 58, 54, 0.1),
+    0 10px 28px rgba(61, 58, 54, 0.12);
+}
+
+.lightbox__nav {
+  position: relative;
 }
 
 .lightbox__panel {
@@ -235,81 +280,30 @@ watch(
 .lightbox__viewport {
   overflow-y: auto;
   overflow-x: hidden;
-  max-height: calc(var(--lightbox-max-height) - 2 * var(--space-lg) - var(--space-md) - 3.5rem);
+  max-height: calc(var(--lightbox-max-height) - 2 * var(--space-lg) - var(--space-md) - 2.75rem);
   padding-inline: var(--space-xl);
   -webkit-overflow-scrolling: touch;
 }
 
-.lightbox__close {
-  position: absolute;
-  top: var(--space-md);
-  inset-inline-end: var(--space-md);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.92);
-  color: var(--color-ink);
-  z-index: 2;
-  box-shadow: var(--shadow-soft);
-  transition:
-    background var(--transition),
-    transform var(--transition);
+.lightbox__figure {
+  position: relative;
+  margin: 0;
 }
 
-.lightbox__close:hover {
-  background: #fff;
-  transform: scale(1.04);
+.lightbox__figure:hover :deep(.gallery-share-footer),
+.lightbox__figure:focus-within :deep(.gallery-share-footer) {
+  opacity: 1;
 }
 
-.lightbox__close-icon {
-  width: 1.125rem;
-  height: 1.125rem;
-  display: block;
-}
-
-.lightbox__nav {
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 3rem;
-  height: 3rem;
-  border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  color: #fff;
-  backdrop-filter: blur(8px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  transition:
-    background var(--transition),
-    border-color var(--transition),
-    transform var(--transition);
-}
-
-.lightbox__nav:hover {
-  background: rgba(255, 255, 255, 0.24);
-  border-color: rgba(255, 255, 255, 0.42);
-  transform: scale(1.06);
-}
-
-.lightbox__nav-icon {
-  width: 1.125rem;
-  height: 1.125rem;
-  display: block;
-}
-
-.lightbox__nav--prev .lightbox__nav-icon {
+.lightbox__nav--prev .lightbox__control-icon {
   transform: rotate(180deg);
 }
 
-:dir(rtl) .lightbox__nav--prev .lightbox__nav-icon {
+:dir(rtl) .lightbox__nav--prev .lightbox__control-icon {
   transform: none;
 }
 
-:dir(rtl) .lightbox__nav--next .lightbox__nav-icon {
+:dir(rtl) .lightbox__nav--next .lightbox__control-icon {
   transform: rotate(180deg);
 }
 
@@ -323,10 +317,6 @@ watch(
 
 .lightbox__caption {
   flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-sm);
   margin: 0;
   padding-top: var(--space-md);
   border-top: 1px solid rgba(61, 58, 54, 0.1);
@@ -340,34 +330,6 @@ watch(
   max-width: 36rem;
 }
 
-.lightbox__share {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  padding: 0.5rem 0.875rem;
-  border-radius: var(--radius-full);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--color-ink);
-  background: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(61, 58, 54, 0.12);
-  box-shadow: var(--shadow-soft);
-  transition:
-    background var(--transition),
-    transform var(--transition);
-}
-
-.lightbox__share:hover {
-  background: #fff;
-  transform: translateY(-1px);
-}
-
-.lightbox__share-icon {
-  width: 1rem;
-  height: 1rem;
-  display: block;
-}
-
 @media (max-width: 768px) {
   .lightbox {
     padding: var(--space-md);
@@ -377,6 +339,7 @@ watch(
     position: relative;
     display: block;
     width: 100%;
+    padding-top: 0;
   }
 
   .lightbox__panel {
